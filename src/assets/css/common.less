@@ -1,0 +1,180 @@
+/*全局通用less*/
+
+/* 颜色规范 */
+@import '~iview/src/styles/index.less';
+
+@primary-color: #1ab394;
+@success-color:#1c84c6;
+@info-color:#23c6c8;
+@warning-color:#f8ac59;
+@danger-color:#ed5565;
+
+@textSize:14px;
+
+/*常用样式*/
+.bold{
+    font-weight: bold;
+}
+.through{
+    text-decoration: line-through
+}
+.panel-layout(@layout){
+    display: flex;
+    justify-content: @layout
+}
+.panel-between{
+    .panel-layout(space-between)
+}
+.panel-start{
+    .panel-layout(flex-start)
+}
+.panel-end{
+    .panel-layout(flex-end)
+}
+.panel-around{
+    .panel-layout(space-around)
+}
+.panel-center{
+    .panel-layout(center)
+}
+.item-center{
+    align-items: center
+}
+/*font 字体颜色*/
+.font-primary{
+    color: @primary-color
+}
+.font-success{
+    color: @success-color
+}
+.font-info{
+    color: @info-color
+}
+.font-warning{
+    color: @warning-color;
+}
+.font-danger{
+    color: @danger-color
+}
+.font-white{
+    color: #fff
+}
+.font-grey{
+    color: #888
+}
+/*字体规范*/
+.font-size(@size){
+    font-size: @textSize + @size
+}
+.font-title{
+    .font-size(6)
+}
+.font-title-sm{
+    .font-size(4)
+}
+.font-title-mini{
+    .font-size(2)
+}
+.font-text{
+    .font-size(0)
+}
+.font-text-mini{
+    .font-size(-1)
+}
+.font-text-assist{
+    .font-size(-2)
+}
+
+/*background color*/
+.bg-primary{
+    background-color: @primary-color;
+}
+.bg-success{
+    background-color: @success-color
+}
+.bg-info{
+    background-color: @info-color
+}
+.bg-warning{
+    background-color: @warning-color
+}
+.bg-danger{
+    background-color: @danger-color
+}
+
+/*tag*/
+.tag(@param){
+    display: block;
+    padding: 5px;
+    width: 40px;
+    border-radius: 3px;
+    text-align: center;
+    @new: hsl(hue(@param), 50%, 90%);
+    color: @param;
+    background-color: @new;
+}
+.tag-primary{
+    .tag(@primary-color);
+}
+.tag-warning{
+    .tag(@warning-color);
+}
+.tag-success{
+    .tag(@success-color);
+}
+.tag-info{
+    .tag(@info-color);
+}
+.tag-danger{
+    .tag(@danger-color);
+}
+
+
+.table-bo{
+    margin-top: 15px;
+    width: 100%;
+    thead{
+        text-align: left;
+        width: 100%;
+        background-color: #f3f3f3;
+        th{
+            line-height: 40px;
+            .font-text;
+            padding: 0 10px;
+            font-weight: normal;
+        }
+    }
+
+    tbody{
+        text-align: left;
+        width: 100%;
+        tr{
+            td{
+                padding: 10px;
+                border-bottom: 1px solid #f3f3f3;
+            }
+            &:hover{
+                background-color: #f3f3f3
+            }
+        }
+        
+    }
+}
+
+.table-de{
+    width: 100%;
+    border-top:1px solid #000000;
+    border-right: 1px solid #000000;
+    tbody{
+        text-align: left;
+        width: 100%;
+        tr{
+            td{
+                padding: 10px;
+                border-bottom: 1px solid #000000;
+                border-left: 1px solid #000000;
+            }
+        }
+        
+    }
+}
