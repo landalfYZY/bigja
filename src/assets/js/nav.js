@@ -15,7 +15,7 @@ var nav = {
         {icon:'network',label:'角色管理',zt:true,children:[
             {label:'角色列表',path:'/school'},
             {label:'新增角色',path:'/schoolAdd'},
-            {label:'权限列表',path:'/wxuser'},
+            {label:'权限列表',path:'/power'},
             {label:'新增权限',path:'/wxuser'},
         ]},
         {icon:'ios-book',label:'收银管理',children:[
@@ -41,10 +41,10 @@ var nav = {
         //     {label:'系统更新日志',path:'#'},
         //     {label:'异常分析',path:'#'}
         // ]},
-        // {icon:'ios-gear',label:'系统设置',children:[
-        //     {label:'个人操作设置',path:'#'},
-        //     {label:'系统基础设置',path:'#'}
-        // ]},
+        {icon:'ios-gear',label:'系统设置',children:[
+            {label:'打印设置',path:'/printSet'},
+            {label:'系统基础设置',path:'#'}
+        ]},
     ]
 }
 

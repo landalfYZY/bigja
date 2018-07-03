@@ -71,13 +71,7 @@ export default {
   methods: {
     registSubmit() {
       this.registLoading = true
-      $.ajax({
-        url: sessionStorage.getItem("API") + "app/login",
-        data: this.login,
-        dataType: "json",
-        method: "post",
-        success(res) {
-          that.registLoading = false
+      this.com.login(this,"app/login",this.login.userName,this.login.passWord,function(res){
           if (res.code) {
             sessionStorage.setItem("user", JSON.stringify(res.params.msg));
             sessionStorage.setItem("token", res.params.token);
@@ -91,8 +85,8 @@ export default {
               localStorage.setItem('passWord',that.login.passWord)
             }
           }
-        }
-      });
+      },"registLoading")
+      
     },
     registReset(name) {
       this.$refs[name].resetFields();
