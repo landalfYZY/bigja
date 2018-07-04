@@ -71,19 +71,20 @@ export default {
   methods: {
     registSubmit() {
       this.registLoading = true
-      this.com.login(this,"app/login",this.login.userName,this.login.passWord,function(res){
+      this.com.login(this,"user/login",this.login.userName,this.login.passWord,function(res){
           if (res.code) {
-            sessionStorage.setItem("user", JSON.stringify(res.params.msg));
-            sessionStorage.setItem("token", res.params.token);
-            that.$router.push({ path: "/" });
+            that.$router.push({ path: "/overview" });
+            // sessionStorage.setItem("user", JSON.stringify(res.params.msg));
+            // sessionStorage.setItem("token", res.params.token);
+            // that.$router.push({ path: "/" });
 
-            localStorage.setItem('remember',that.remember)
-            localStorage.setItem('autoLogin',that.autoLogin)
+            // localStorage.setItem('remember',that.remember)
+            // localStorage.setItem('autoLogin',that.autoLogin)
 
-            if(that.remember){
-              localStorage.setItem('userName',that.login.userName)
-              localStorage.setItem('passWord',that.login.passWord)
-            }
+            // if(that.remember){
+            //   localStorage.setItem('userName',that.login.userName)
+            //   localStorage.setItem('passWord',that.login.passWord)
+            // }
           }
       },"registLoading")
       

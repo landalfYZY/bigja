@@ -1,4 +1,5 @@
-var API = 'https://www.sunwou.com/jf/';
+var API = 'http://192.168.31.250/jf/';
+var APPID = 'wx9676e5a723951d1a';
 
 var config = {
     pageSize:10,
@@ -29,13 +30,19 @@ function login(that,url,username,password,methods,loading){
 /**
  * 通用查找方法
  */
-function find(that,url,query,loading){
+function query(that,url,query,loading){
     post(that,url,{query:query},function(res){
         that.list = res.params.msg;
         that.total = res.params.total;
     },loading)
 }
-
+function find(that,url,name,data){
+    post(that,url,data,function(res){
+        if(res.code){
+            that[name] = res.params.msg
+        }
+    })
+}
 
 
 /**
@@ -75,6 +82,8 @@ module.exports = {
     config:config,
     post:post,
     globleData:globleData,
+    query:query,
     find:find,
-    login:login
+    login:login,
+    APPID:APPID
 }

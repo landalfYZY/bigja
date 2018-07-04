@@ -1,22 +1,23 @@
 var nav = {
     config:{},
     items:[
-        {icon:'speakerphone',label:'通知广告',zt:true,children:[
+        {icon:'speakerphone',label:'通知广告',children:[
             {label:'广告列表',path:'/carousel'},
             {label:'公告列表',path:'/notice'},
         ]},
-        {icon:'speakerphone',label:'图库管理',zt:true,children:[
+        {icon:'images',label:'图库管理',children:[
             {label:'图库列表',path:'/carousel'},
         ]},
-        {icon:'speakerphone',label:'接单管理',zt:true,children:[
+        {icon:'printer',label:'接单管理',children:[
             {label:'接单面板',path:'/receiptPanel'},
             {label:'接单记录',path:'/carousel'},
         ]},
-        {icon:'network',label:'角色管理',zt:true,children:[
-            {label:'角色列表',path:'/school'},
-            {label:'新增角色',path:'/schoolAdd'},
+        {icon:'network',label:'角色管理',children:[
+            {label:'角色列表',path:'/role'},
+            {label:'新增角色',path:'/roleInsert'},
             {label:'权限列表',path:'/power'},
-            {label:'新增权限',path:'/wxuser'},
+            {label:'新增权限',path:'/powerInsert'},
+            {label:'新增权限分类',path:'/powerCategory'},
         ]},
         {icon:'ios-book',label:'收银管理',children:[
             {label:'收银员',path:'/student'},
