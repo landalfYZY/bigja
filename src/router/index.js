@@ -16,6 +16,8 @@ import powerCategory from '../components/role/power_category'
 import roleInsert from '../components/role/role_insert'
 import role from '../components/role/role'
 
+import gallery from '../components/gallery/gallery'
+
 
 Vue.use(Router)
 
@@ -34,6 +36,8 @@ export default new Router({
       { path: '/powerCategory', name: '新增权限分类', component: powerCategory },
       { path: '/roleInsert', name: '新增角色', component: roleInsert },
       { path: '/role', name: '角色列表', component: role },
+
+      { path: '/gallery', name: '图库', component: gallery },
     ]}
   ]
 })

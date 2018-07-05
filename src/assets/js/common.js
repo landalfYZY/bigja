@@ -58,6 +58,9 @@ function post(that,url,data,method,loading){
         data:data,
         method:'post',
         dataType:'json',
+        xhrFields: {
+            withCredentials: true
+        },
         complete(res){
             if(loading){
                 that[loading] = false;

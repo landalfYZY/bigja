@@ -6,7 +6,7 @@ var nav = {
             {label:'公告列表',path:'/notice'},
         ]},
         {icon:'images',label:'图库管理',children:[
-            {label:'图库列表',path:'/carousel'},
+            {label:'图库列表',path:'/gallery'},
         ]},
         {icon:'printer',label:'接单管理',children:[
             {label:'接单面板',path:'/receiptPanel'},
