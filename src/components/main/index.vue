@@ -143,7 +143,7 @@ export default {
           this.activeName = this.$route.fullPath;
         }
       } else {
-        // this.$router.push("/login");
+        this.$router.push("/login");
       }
     },
     windowResize() {

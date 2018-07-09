@@ -28,8 +28,8 @@ var nav = {
             {label:'新增缴费项',path:'/payAdd'}
         ]},
         {icon:'social-python',label:'店铺管理',children:[
-            {label:'店铺列表',path:'/bankCard'},
-            {label:'新增店铺',path:'/bankCardAdd'}
+            {label:'店铺列表',path:'/shop'},
+            {label:'新增店铺',path:'/shopInsert'}
         ]},
         {icon:'record',label:'款项记录',children:[
             {label:'订单记录',path:'/orderRecord'},

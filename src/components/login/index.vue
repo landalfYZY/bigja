@@ -46,8 +46,8 @@ export default {
         userName: "",
         passWord: ""
       },
-      remember:false,
-      autoLogin:false,
+      remember: false,
+      autoLogin: false,
       registLoading: false,
       regModal: false,
       showModal: false
@@ -55,39 +55,50 @@ export default {
   },
   mounted() {
     that = this;
-    if(localStorage.getItem('userName')){
-      this.login.userName = localStorage.getItem('userName')
-      this.login.passWord = localStorage.getItem('passWord')
+    if (localStorage.getItem("userName")) {
+      this.login.userName = localStorage.getItem("userName");
+      this.login.passWord = localStorage.getItem("passWord");
     }
-    if(localStorage.getItem('remember')){
-      this.remember = true
+    if (localStorage.getItem("remember")) {
+      this.remember = true;
     }
-    if(localStorage.getItem('autoLogin') && localStorage.getItem('autoLogin') == true){
-      this.remember = true
-      this.autoLogin = true
-      this.registSubmit()
+    if (
+      localStorage.getItem("autoLogin") &&
+      localStorage.getItem("autoLogin") == true
+    ) {
+      this.remember = true;
+      this.autoLogin = true;
+      this.registSubmit();
     }
   },
   methods: {
     registSubmit() {
-      this.registLoading = true
-      this.com.login(this,"user/login",this.login.userName,this.login.passWord,function(res){
+      this.registLoading = true;
+      this.com.login(
+        this,
+        "user/login",
+        this.login.userName,
+        this.login.passWord,
+        function(res) {
           if (res.code) {
+            sessionStorage.setItem("user", JSON.stringify(res.params.msg));
+            sessionStorage.setItem(
+              "userId",
+              JSON.stringify(res.params.msg.sunwouId)
+            );
             that.$router.push({ path: "/overview" });
-            // sessionStorage.setItem("user", JSON.stringify(res.params.msg));
-            // sessionStorage.setItem("token", res.params.token);
-            // that.$router.push({ path: "/" });
 
-            // localStorage.setItem('remember',that.remember)
-            // localStorage.setItem('autoLogin',that.autoLogin)
+            localStorage.setItem("remember", that.remember);
+            localStorage.setItem("autoLogin", that.autoLogin);
 
-            // if(that.remember){
-            //   localStorage.setItem('userName',that.login.userName)
-            //   localStorage.setItem('passWord',that.login.passWord)
-            // }
+            if (that.remember) {
+              localStorage.setItem("userName", that.login.userName);
+              localStorage.setItem("passWord", that.login.passWord);
+            }
           }
-      },"registLoading")
-      
+        },
+        "registLoading"
+      );
     },
     registReset(name) {
       this.$refs[name].resetFields();

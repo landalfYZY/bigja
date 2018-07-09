@@ -42,7 +42,6 @@ export default {
     return {
       login: {
         groupId:this.com.APPID,
-        roleId:'500b4-20180704151639812',
         userName: "",
         passWord: "",
         rpassWord:''

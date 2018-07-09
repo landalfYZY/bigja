@@ -1,6 +1,7 @@
-var API = 'http://192.168.31.250/jf/';
+//var API = 'http://192.168.31.250/jf/';
+var API = 'http://192.168.43.25/jf/';
+//var API = 'http://localhost:8080/landalf/'
 var APPID = 'wx9676e5a723951d1a';
-
 var config = {
     pageSize:10,
     pageSizeList:[
@@ -12,18 +13,27 @@ var config = {
 };
 
 var globleData = {
-    userInfo:null,
-    token:''
+    token:'',
+    tempImages:[]
 }
-
+function http(method,url,data,dataType,methods){
+    $.ajax({
+        url:url,
+        method:method,
+        data:data,
+        dataType:dataType,  
+        success(res){
+            methods(res)
+        }
+    })
+}
 function login(that,url,username,password,methods,loading){
     post(that,url,{
         userName:username,
         passWord:password
     },function(res){
         methods(res);
-        globleData.userInfo = res.params.msg;
-        globleData.token = res.params.token;
+        
     },loading)
 }
 
@@ -36,10 +46,16 @@ function query(that,url,query,loading){
         that.total = res.params.total;
     },loading)
 }
-function find(that,url,name,data){
+function find(that,url,name,data,total,cb){
     post(that,url,data,function(res){
         if(res.code){
-            that[name] = res.params.msg
+            that[name] = res.params.msg;
+            if(total){
+                that[total] = res.params.total;
+            }
+            if(cb){
+                cb(res)
+            }
         }
     })
 }
@@ -56,7 +72,7 @@ function post(that,url,data,method,loading){
     $.ajax({
         url: API+url,
         data:data,
-        method:'post',
+        type:'post',
         dataType:'json',
         xhrFields: {
             withCredentials: true
@@ -85,8 +101,9 @@ module.exports = {
     config:config,
     post:post,
     globleData:globleData,
-    query:query,
     find:find,
     login:login,
-    APPID:APPID
+    APPID:APPID,
+    query:query,
+    http:http
 }

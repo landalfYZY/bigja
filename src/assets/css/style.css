@@ -43,3 +43,58 @@
     height: 60px;
     border-radius: 60px
 }
+.ult-wiss{
+    width: 100%;
+    height: 40px;
+    background: #f3f3f3;
+    padding: 0 15px;
+    margin-top: 20px;
+}
+.backpanel{
+    width: 100%;
+    background: #f3f3f3;
+    margin-top: 15px;
+    background-position: center;
+    background-size: cover;
+    flex-direction: row
+}
+.sizeshow{
+    padding:0 5px;
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    border-radius: 0 0 0 10px;
+}
+.ell{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap
+}
+.dispanel{
+    width: 100%;
+    padding: 7px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+}
+.bitems{
+    width: 33.33%;
+    cursor: pointer;
+    text-align: center;
+
+}
+.bitems:hover{
+    background: rgba(0, 0, 0, 0.7)
+}
+.folder{
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+}
+.shopImgar{
+    width: 250px;
+    height: 180px;
+    background: #f3f3f3;
+    cursor: pointer;
+}
+.shopImgar:hover{
+    border: 1px solid #0099ff
+}

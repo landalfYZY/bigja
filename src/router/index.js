@@ -18,6 +18,14 @@ import role from '../components/role/role'
 
 import gallery from '../components/gallery/gallery'
 
+import shop from '../components/shop/shop'
+import shopInsert from '../components/shop/shop_insert'
+import shopDetail from '../components/shop/shopDetail'
+
+import category from '../components/goods/category'
+import goods from '../components/goods/goods'
+import specifications from '../components/goods/specifications'
+
 
 Vue.use(Router)
 
@@ -38,6 +46,17 @@ export default new Router({
       { path: '/role', name: '角色列表', component: role },
 
       { path: '/gallery', name: '图库', component: gallery },
+
+      { path: '/shop', name: '店铺列表', component: shop },
+      { path: '/shopDetail', name: '店铺详情', component: shopDetail ,children:[
+        { path: '/goods_1', name: '商品列表', component: goods },
+        { path: '/category_1', name: '分类列表', component: category },
+        { path: '/specifications_1', name: '规格列表', component: specifications },
+      ]},
+
+      { path: '/shopInsert', name: '新增商店', component: shopInsert },
+      { path: '/goods', name: '商品列表', component: goods },
+      { path: '/category', name: '分类列表', component: category },
     ]}
   ]
 })

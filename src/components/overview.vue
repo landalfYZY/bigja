@@ -80,42 +80,10 @@ export default {
   },
   mounted() {
     that = this;
-    this.getSData('wxuser','appid',JSON.parse(sessionStorage.getItem("user")).appid ? JSON.parse(sessionStorage.getItem("user")) .sunwouId:JSON.parse(sessionStorage.getItem("user")).appId ,'wxuserNum');
-    this.getSData('user',JSON.parse(sessionStorage.getItem("user")).appid ? "appid"
-                  : "schoolId",JSON.parse(sessionStorage.getItem("user")) .sunwouId,'studentNum');
-    this.getSData('order',JSON.parse(sessionStorage.getItem("user")).appid ? "appid":"schoolId",JSON.parse(sessionStorage.getItem("user")) .sunwouId,'orderNum');
+    
   },
   methods: {
-    getSData(url,val,value,name) {
-      $.ajax({
-        url: sessionStorage.getItem('API') + url+"/find",
-        data: {
-          query: JSON.stringify({
-            fields: [],
-            wheres: [
-              {
-                value: val,
-                opertionType: "equal",
-                opertionValue: value
-              },
-              { value: "isDelete", opertionType: "equal", opertionValue: false }
-            ],
-            sorts: [{ value: "createTime", asc: false }],
-            pages: {
-              currentPage: 1,
-              size: 1
-            }
-          })
-        },
-        dataType:'json',
-        method:'post',
-        success(res){
-            if(res.code){
-                that[name] = res.params.total
-            }
-        }
-      });
-    },
+   
     
   }
 };
