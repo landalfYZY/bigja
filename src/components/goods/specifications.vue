@@ -6,7 +6,7 @@
                 <div class="panel-start item-center">
                     <ButtonGroup>
                         <Button type="ghost" @click="changeUpdate(null,'isDelete',true)"><Icon type="trash-a"></Icon> 删除</Button>
-                        <Button type="ghost" @click="centerDialogVisible = true,dialogTitle = '新增类目'"><Icon type="android-add"></Icon> 新增类目</Button>
+                        <Button type="ghost" @click="centerDialogVisible = true,dialogTitle = '新增规格类目'"><Icon type="android-add"></Icon> 新增规格类目</Button>
                         <Button type="ghost" @click="outputData()"><Icon type="ios-upload-outline"></Icon> 导出数据</Button>
                     </ButtonGroup>
                     <span class="font-grey" style="margin-left:10px">可以按回车进行筛选</span>
@@ -40,16 +40,40 @@
             <Modal v-model="centerDialogVisible" :title="dialogTitle"
                 width="400" @on-ok="onDialogSubmit">
                 <Form :model="formValidate" label-position="top">
-                    <FormItem label="类目名称">
-                        <Input v-model="formValidate.name" placeholder="类目名称" />
+                    <FormItem label="规格类目名称">
+                        <Input v-model="formValidate.name" placeholder="规格类目名称" />
+                    </FormItem>
+                    <FormItem label="描述">
+                        <Input v-model="formValidate.des" placeholder="描述" />
                     </FormItem>
                     <FormItem label="序号">
                         <Input v-model="formValidate.sort" placeholder="序号" />
                     </FormItem>
-                     <FormItem label="分类开启">
-                        <i-switch v-model="formValidate.able"></i-switch>
+                </Form>
+            </Modal>
+
+            <Modal v-model="dialogVisible" :title="canTitle"
+                width="500" @on-ok="canSubmit">
+                <Form :model="canValue" label-position="top">
+                    <FormItem label="参数名">
+                        <Input placeholder="参数名" v-model="canValue.name"  />
+                    </FormItem>
+                    <FormItem label="需加价格">
+                        <Input placeholder="需加价格" v-model="canValue.add"  />
+                    </FormItem>
+                    <FormItem label="序号">
+                        <Input placeholder="序号" v-model="canValue.sort"  />
                     </FormItem>
                 </Form>
+            </Modal>
+
+            <Modal v-model="dialogSd" title="提示"
+                width="400">
+                <ButtonGroup>
+                    <Button type="default" @click="dialogSd = false">取消</Button>
+                    <Button type="error" @click="dialogSd = false,delCan()">删除</Button>
+                    <Button type="primary" @click="dialogSd = false,dialogVisible = true,canTitle = '修改参数'">修改</Button>
+                </ButtonGroup>
             </Modal>
         </div>
     </transition>
@@ -62,13 +86,19 @@ export default {
   data() {
     return {
       formValidate:{
-          shopId:'',
           name:'',
           sort:0,
-          able:false
+          parentId:JSON.parse(sessionStorage.getItem("userId")),
+          des:''
       },
-      dialogTitle:'新增类目',
+      canValue:{
+          name:'',add:'',sort:0,parentid:''
+      },
+      dialogSd:false,
+      canTitle:'新增参数',
+      dialogTitle:'新增规格类目',
       centerDialogVisible:false,
+      dialogVisible:false,
       tableLoading:false,
       total: 0,
       selection:[],
@@ -78,23 +108,30 @@ export default {
         { type: "selection", width: 60, align: "center"},
         { title: "序号", key: "sort" },
         { title: "类目名称", key: "name" },
-        { title: "是否显示", 
-            render(h, params){
-                return h('i-switch',{
-                    props:{ value:params.row.able,size:'small',
-                    },
-                    on:{
-                        'on-change'(){
-                            that.changeUpdate(params.row.sunwouId,'able',!params.row.able)
+        { title: "描述", key: "des" },
+        { title: "参数", render(h,params){
+            var str = [];
+            for(var i in params.row.attributes){
+                str.push(h("Button",{
+                    props:{type:params.row.attributes[i].add > 0 ? "primary":"warning",size:'small'},
+                        on:{
+                            click(){
+                                console.log(i)
+                                that.dialogSd = true;
+                                that.canValue = params.row.attributes[i]
+                            }
+                        },
+                        domProps: {
+                            innerHTML: params.row.attributes[i].name
                         }
-                    }
-                })
+                    }))
             }
-        },
+            return h("ButtonGroup",str)
+        } },
         {
           title: "操作",
           key: "action",
-          width: 150,
+          width: 170,
           align: "center",
           render: (h, params) => {
             return h("ButtonGroup", [
@@ -112,6 +149,15 @@ export default {
                 h("Button",{props:{type:'ghost',size:"small"},
                     on:{
                         click(){
+                            that.dialogVisible = true;
+                            that.canTitle = "新增参数";
+                            that.canValue.parentid = params.row.sunwouId;
+                        }
+                    }
+                },"参数"),
+                h("Button",{props:{type:'ghost',size:"small"},
+                    on:{
+                        click(){
                             that.changeUpdate(params.row.sunwouId,'isDelete',true)
                         }
                     }
@@ -124,7 +170,7 @@ export default {
       query: {
         fields: [],
         wheres: [
-          { value: "shopId", opertionType: "equal", opertionValue: '' },
+          { value: "parentId", opertionType: "equal", opertionValue: JSON.parse(sessionStorage.getItem("userId")) },
           { value: "isDelete", opertionType: "equal", opertionValue: false }
         ],
         sorts: [{ value: "sort", asc: true }],
@@ -137,15 +183,29 @@ export default {
   },
   mounted() {
     that = this;
-    this.query.wheres[0].opertionValue = this.$route.query.id;
     that.getList();
-    this.formValidate.shopId = that.$route.query.id;
   },
   methods: {
+    canSubmit(){
+        var url = "productattribute/add";
+        var data = this.canValue;
+        if(this.canTitle != "新增参数"){
+            url = "productattribute/update";
+            data.ids = data.sunwouId
+        }
+        this.com.post(this,url,data,function(res){
+            if(res.code){
+                that.$Notice.success({
+                    title:res.msg
+                })
+                that.getList();
+            }
+        })
+    },
     onDialogSubmit(){
         var url = "productattributecategory/add";
         var data = this.formValidate;
-        if(this.dialogTitle != "新增类目"){
+        if(this.dialogTitle != "新增规格类目"){
             url = "productattributecategory/update";
             data.ids = data.sunwouId
         }
@@ -159,15 +219,45 @@ export default {
         })
     },
     changeUpdate(id,name,value){
+        if(name == "isDelete"){
+            this.$Modal.confirm({
+                    title: '提示',
+                    content: '<p>删除后将无法找回，确认要删除？</p>',
+                    onOk: () => {
+                        that.doChangeUpdate(id,name,value)
+                    },
+                    onCancel: () => {
+                        
+                    }
+                });
+        }else{
+            this.doChangeUpdate(id,name,value)
+        }
+        
+    },
+    doChangeUpdate(id,name,value){
         if(id != null){
             that.doUpdate(id,name,value)
         }else{
             if(this.selection.length > 0){
                 that.doUpdate(this.selection.toString(),name,value)
             }else{
-                that.$Message.info("还没选店铺呢")
+                that.$Message.info("还没选类目呢")
             }
         }
+    },
+    delCan(){
+        this.com.post(this,'productattribute/update',{
+            ids:this.canValue.sunwouId,
+            isDelete:true
+        },function(res){
+            if(res.code){
+                that.$Notice.success({
+                    title:res.msg
+                })
+                that.getList();
+            }
+        })
     },
     doUpdate(id,name,value){
         var data = {ids:id}

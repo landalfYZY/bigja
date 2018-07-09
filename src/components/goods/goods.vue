@@ -5,8 +5,9 @@
             <div class="panel-between">
                 <div class="panel-start item-center">
                     <ButtonGroup>
+                        
                         <Button type="ghost" @click="changeUpdate(null,'isDelete',true)"><Icon type="trash-a"></Icon> 删除</Button>
-                        <Button type="ghost" @click="centerDialogVisible = true,dialogTitle = '新增类目'"><Icon type="android-add"></Icon> 新增类目</Button>
+                        <Button type="ghost" @click="navTo('/goodsInsert_1')"><Icon type="android-add"></Icon> 新增商品</Button>
                         <Button type="ghost" @click="outputData()"><Icon type="ios-upload-outline"></Icon> 导出数据</Button>
                     </ButtonGroup>
                     <span class="font-grey" style="margin-left:10px">可以按回车进行筛选</span>
@@ -159,13 +160,30 @@ export default {
         })
     },
     changeUpdate(id,name,value){
+        if(name == "isDelete"){
+            this.$Modal.confirm({
+                    title: '提示',
+                    content: '<p>删除后将无法找回，确认要删除？</p>',
+                    onOk: () => {
+                        that.doChangeUpdate(id,name,value)
+                    },
+                    onCancel: () => {
+                        
+                    }
+                });
+        }else{
+            this.doChangeUpdate(id,name,value)
+        }
+        
+    },
+    doChangeUpdate(id,name,value){
         if(id != null){
             that.doUpdate(id,name,value)
         }else{
             if(this.selection.length > 0){
                 that.doUpdate(this.selection.toString(),name,value)
             }else{
-                that.$Message.info("还没选店铺呢")
+                that.$Message.info("还没选类目呢")
             }
         }
     },

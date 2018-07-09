@@ -20,16 +20,16 @@
         </div>
         <Menu mode="horizontal" theme="light" active-name="/goods_1" @on-select="tabsClick">
             <MenuItem name="/goods_1">
-                <Icon type="ios-paper"></Icon>
+                <Icon type="coffee"></Icon>
                 商品
             </MenuItem>
             <MenuItem name="/category_1">
-                <Icon type="ios-people"></Icon>
+                <Icon type="grid"></Icon>
                 类目
             </MenuItem>
-            <MenuItem name="2">
-                <Icon type="ios-people"></Icon>
-                规格
+            <MenuItem name="/specifications_1">
+                <Icon type="steam"></Icon>
+                规格库
             </MenuItem>
             <MenuItem name="4">
                 <Icon type="settings"></Icon>

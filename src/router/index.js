@@ -25,6 +25,7 @@ import shopDetail from '../components/shop/shopDetail'
 import category from '../components/goods/category'
 import goods from '../components/goods/goods'
 import specifications from '../components/goods/specifications'
+import goodsInsert from '../components/goods/goodsInsert'
 
 
 Vue.use(Router)
@@ -52,11 +53,13 @@ export default new Router({
         { path: '/goods_1', name: '商品列表', component: goods },
         { path: '/category_1', name: '分类列表', component: category },
         { path: '/specifications_1', name: '规格列表', component: specifications },
+        { path: '/goodsInsert_1', name: '新增商品', component: goodsInsert },
       ]},
 
       { path: '/shopInsert', name: '新增商店', component: shopInsert },
       { path: '/goods', name: '商品列表', component: goods },
       { path: '/category', name: '分类列表', component: category },
+      
     ]}
   ]
 })

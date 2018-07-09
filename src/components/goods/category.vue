@@ -159,13 +159,30 @@ export default {
         })
     },
     changeUpdate(id,name,value){
+        if(name == "isDelete"){
+            this.$Modal.confirm({
+                    title: '提示',
+                    content: '<p>删除后将无法找回，确认要删除？</p>',
+                    onOk: () => {
+                        that.doChangeUpdate(id,name,value)
+                    },
+                    onCancel: () => {
+                        
+                    }
+                });
+        }else{
+            this.doChangeUpdate(id,name,value)
+        }
+        
+    },
+    doChangeUpdate(id,name,value){
         if(id != null){
             that.doUpdate(id,name,value)
         }else{
             if(this.selection.length > 0){
                 that.doUpdate(this.selection.toString(),name,value)
             }else{
-                that.$Message.info("还没选店铺呢")
+                that.$Message.info("还没选类目呢")
             }
         }
     },

@@ -17,7 +17,7 @@
         </div>
 
         <el-dialog title="上传图片" :visible.sync="centerDialogVisible" width="400px" center>
-            <Upload multiple :action="api + 'file/upload'" :data="{userId:'1sss1',groupId:this.groupId}" :max-size="2048" :on-success="beforeUpload">
+            <Upload multiple :action="api + 'file/upload'" :data="{userId:userId,groupId:this.groupId}" :max-size="2048" :on-success="beforeUpload">
                 <Button type="ghost" icon="ios-cloud-upload-outline">点击上传图片</Button>
             </Upload>
             <span slot="footer" class="dialog-footer" >
@@ -89,12 +89,14 @@ var that;
 export default {
   data() {
     return {
+      userId: JSON.parse(sessionStorage.getItem("userId")),
       breadcrumb:[{name:'主目录',id:'ne'}],
       groupId: "ne",
       folderDialogVisible: false,
       tempFolder: {
         name: "",
-        isPublic: false
+        isPublic: false,
+        userId: JSON.parse(sessionStorage.getItem("userId"))
       },
       total:0,
       newFolderLoading: false,
@@ -109,6 +111,7 @@ export default {
           fields: [],
         wheres: [
             {value:'groupId',opertionType:'equal',opertionValue:'ne'},
+            {value:'userId',opertionType:'equal',opertionValue: JSON.parse(sessionStorage.getItem("userId"))},
             {value:'isDelete',opertionType:'equal',opertionValue:false}
         ],
         sorts: [],
@@ -121,6 +124,7 @@ export default {
         fields: [],
         wheres: [
             {value:'groupId',opertionType:'equal',opertionValue:'ne'},
+            {value:'userId',opertionType:'equal',opertionValue: JSON.parse(sessionStorage.getItem("userId"))},
             {value:'isDelete',opertionType:'equal',opertionValue:false}
         ],
         sorts: [],
