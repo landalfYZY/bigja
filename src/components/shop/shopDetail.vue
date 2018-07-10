@@ -2,7 +2,9 @@
     <div>
         <div class="panel-start" style="background:#f3f3f3;padding:15px" v-for="item in shopDetail" :key="item.sunwouId">
             <div>
-                <img v-if="item.shopImage"  height="120px" :src="item.shopImage" style="border:1px solid #000">
+                <div style="height:100px;min-width:120px;background:#ffffff" v-if="item.shopImage">
+                    <img   height="100px" :src="item.shopImage" style="border:1px solid #000">
+                </div>
                 <div v-if="!item.shopImage"  style="width:200px;height:120px;background:#f3f3f3"></div>
             </div>
             <div style="margin-left:20px">
@@ -13,9 +15,10 @@
                 
             </div>
             <div style="margin-left:40px">
-                <div  style="margin-top:0px">营业状态：<i-switch v-model="item.openStatus"></i-switch></div>
-                <div style="margin-top:10px">配送模式：<i-switch v-model="item.sendMode"></i-switch></div>
-                <div style="margin-top:10px">接单模式：<i-switch v-model="item.getMode"></i-switch></div>
+                <div  style="margin-top:0px">营业状态：<i-switch v-model="item.openStatus" @on-change="changeUpdate(item.sunwouId,'openStatus',item.openStatus)" size="small"></i-switch></div>
+                <div style="margin-top:10px">配送模式：<i-switch v-model="item.sendMode" @on-change="changeUpdate(item.sunwouId,'sendMode',item.sendMode)" size="small"></i-switch></div>
+                <div style="margin-top:10px">接单模式：<i-switch v-model="item.getMode" @on-change="changeUpdate(item.sunwouId,'getMode',item.getMode)" size="small"></i-switch></div>
+                <div style="margin-top:10px"><a href="javascript:;">修改基础信息</a></div>
             </div>
         </div>
         <Menu mode="horizontal" theme="light" active-name="/goods_1" @on-select="tabsClick">
@@ -60,6 +63,45 @@ export default {
     this.tabsClick("/goods_1")
   },
   methods: {
+    changeUpdate(id,name,value){
+        if(name == "isDelete"){
+            this.$Modal.confirm({
+                    title: '提示',
+                    content: '<p>删除后将无法找回，确认要删除？</p>',
+                    onOk: () => {
+                        that.doChangeUpdate(id,name,value)
+                    },
+                    onCancel: () => {
+                        
+                    }
+                });
+        }else{
+            this.doChangeUpdate(id,name,value)
+        }
+        
+    },
+    doChangeUpdate(id,name,value){
+        if(id != null){
+            that.doUpdate(id,name,value)
+        }else{
+            if(this.selection.length > 0){
+                that.doUpdate(this.selection.toString(),name,value)
+            }else{
+                that.$Message.info("还没选类目呢")
+            }
+        }
+    },
+    doUpdate(id,name,value){
+        var data = {ids:id}
+        data[name] = value;
+        this.com.post(this,'shop/update',data,function(res){
+            if(res.code){
+                that.$Notice.success({
+                    title:res.msg
+                })
+            }
+        })
+    },
     tabsClick(e){
         this.$router.push({path:e,query:{id:this.$route.query.id}})
     },

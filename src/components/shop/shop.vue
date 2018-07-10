@@ -5,7 +5,7 @@
                 <div class="panel-start item-center">
                     <ButtonGroup>
                         
-                        <Button type="ghost" ><Icon type="trash-a"></Icon> 删除</Button>
+                        <Button type="ghost" @click="changeUpdate(null,'isDelete',true)"><Icon type="trash-a"></Icon> 删除</Button>
                         <Button type="ghost" @click="navTo('/shopInsert')"><Icon type="android-add"></Icon> 新增店铺</Button>
                         <Button type="ghost" @click="outputData()"><Icon type="ios-upload-outline"></Icon> 导出数据</Button>
                     </ButtonGroup>
@@ -181,27 +181,45 @@ export default {
     that.getList();
   },
   methods: {
-    changeUpdate(id, name, value) {
-      if (id != null) {
-        that.doUpdate(id, name, value);
-      } else {
-        if (this.selection.length > 0) {
-          that.doUpdate(this.selection.toString(), name, value);
-        } else {
-          that.$Message.info("还没选店铺呢");
+    changeUpdate(id,name,value){
+        if(name == "isDelete"){
+            this.$Modal.confirm({
+                    title: '提示',
+                    content: '<p>删除后将无法找回，确认要删除？</p>',
+                    onOk: () => {
+                        that.doChangeUpdate(id,name,value)
+                    },
+                    onCancel: () => {
+                        
+                    }
+                });
+        }else{
+            this.doChangeUpdate(id,name,value)
         }
-      }
+        
     },
-    doUpdate(id, name, value) {
-      var data = { ids: id };
-      data[name] = value;
-      this.com.post(this, "shop/update", data, function(res) {
-        if (res.code) {
-          that.$Notice.success({
-            title: res.msg
-          });
+    doChangeUpdate(id,name,value){
+        if(id != null){
+            that.doUpdate(id,name,value)
+        }else{
+            if(this.selection.length > 0){
+                that.doUpdate(this.selection.toString(),name,value)
+            }else{
+                that.$Message.info("还没选类目呢")
+            }
         }
-      });
+    },
+    doUpdate(id,name,value){
+        var data = {ids:id}
+        data[name] = value
+        this.com.post(this,'shop/update',data,function(res){
+            if(res.code){
+                that.$Notice.success({
+                    title:res.msg
+                })
+                that.getList();
+            }
+        })
     },
     getSelected(e) {
       var li = [];

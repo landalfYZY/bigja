@@ -17,7 +17,7 @@
             </FormItem>
             <FormItem label="输入地点" prop="address" style="max-width:600px">
                 <Select v-model="formValidate.address" filterable remote :remote-method="locationInput" :label-in-value="true" @on-change="getLocation">
-                    <Option v-for="(option, index) in addressFilter" :value="option.address" :label="option.address+','+option.location.lat+','+option.location.lng" :key="index">{{option.address}}</Option>
+                    <Option v-for="(option, index) in addressFilter" :value="option.name" :label="option.name+','+option.location.lat+','+option.location.lng" :key="index">{{option.name}}</Option>
                 </Select>
             </FormItem>
             <FormItem label="店铺电话" prop="phone" style="max-width:400px">
@@ -92,13 +92,13 @@ var that;
         },
         methods: {
             locationInput(e){
-                this.com.http('get','https://apis.map.qq.com/ws/place/v1/suggestion',{
-                    keyword:e,
+                this.com.http('get','https://api.map.baidu.com/place/v2/suggestion',{
+                    query:e,
                     region:this.formValidate.city,
-                    key:'MJ3BZ-VA632-QHGUY-COFWL-U6LME-TGBQR',
-                    output:'jsonp'
+                    ak:'5w3ODGXuLmKOkGgsDVsZ8Q5wguwKf1Xu',
+                    output:'json'
                 },'jsonp',function(res){
-                    that.addressFilter = res.data;
+                    that.addressFilter = res.result;
                 })
             },
             getLocation(e){

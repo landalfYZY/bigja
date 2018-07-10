@@ -1,6 +1,6 @@
-var API = 'http://192.168.31.250/jf/';
+//var API = 'http://192.168.31.250/jf/';
 //var API = 'http://192.168.43.25/jf/';
-//var API = 'https://www.sunwou.com/dk/'
+var API = 'https://www.sunwou.com/dk/'
 var APPID = 'wx9676e5a723951d1a';
 var config = {
     pageSize:10,
