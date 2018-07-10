@@ -22,7 +22,7 @@
                 <Row :gutter="5">
             
                     <Col :span="4">
-                        <Input v-model="search1" placeholder="类目 查找" @input="search('name',1)"  @keydown.enter.native="changePageSize()" />
+                        <Input v-model="search1" placeholder="商品 查找" @input="search('productName',1)"  @keydown.enter.native="changePageSize()" />
                     </Col>
                     
                     
@@ -78,8 +78,15 @@ export default {
       columns: [
         { type: "selection", width: 60, align: "center"},
         { title: "序号", key: "sort" },
-        { title: "类目名称", key: "name" },
-        { title: "是否显示", 
+        { title: "图片", render(h, params){
+            return h("Avatar",{
+                src:params.row.productImage
+            })
+        } },
+        { title: "商品名称", key: "productName" },
+        { title: "标价", key: "amount" },
+        { title: "售价", key: "discount" },
+        { title: "上架状态", 
             render(h, params){
                 return h('i-switch',{
                     props:{ value:params.row.able,size:'small',
@@ -104,9 +111,8 @@ export default {
                     props:{type:'ghost',size:"small"},
                     on:{
                         click(){
-                            that.dialogTitle = "修改类目";
-                            that.centerDialogVisible = true;
-                            that.formValidate = params.row
+                            that.$router.push({path:'/goodsInsert_1',query:{id:that.$route.query.id,gid:params.row.sunwouId,title:'修改商品'}})
+                            
                         }
                     }
                 },"修改"),
@@ -143,22 +149,7 @@ export default {
     this.formValidate.shopId = that.$route.query.id;
   },
   methods: {
-    onDialogSubmit(){
-        var url = "productcategory/add";
-        var data = this.formValidate;
-        if(this.dialogTitle != "新增类目"){
-            url = "productcategory/update";
-            data.ids = data.sunwouId
-        }
-        this.com.post(this,url,data,function(res){
-            if(res.code){
-                that.$Notice.success({
-                    title:res.msg
-                })
-                that.getList();
-            }
-        })
-    },
+   
     changeUpdate(id,name,value){
         if(name == "isDelete"){
             this.$Modal.confirm({
@@ -183,14 +174,14 @@ export default {
             if(this.selection.length > 0){
                 that.doUpdate(this.selection.toString(),name,value)
             }else{
-                that.$Message.info("还没选类目呢")
+                that.$Message.info("还没选商品呢")
             }
         }
     },
     doUpdate(id,name,value){
         var data = {ids:id}
         data[name] = value
-        this.com.post(this,'productcategory/update',data,function(res){
+        this.com.post(this,'product/update',data,function(res){
             if(res.code){
                 that.$Notice.success({
                     title:res.msg
@@ -224,7 +215,7 @@ export default {
       
     },
     clearFilter(){
-      var li = ['name']
+      var li = ['productName']
       for(var i=0;i<1;i++){
           this['search'+parseInt(i+1)] = '';
           this.search(li[i],parseInt(i+1))
@@ -258,7 +249,7 @@ export default {
     },
     getList() {
       this.tableLoading = true;
-      this.com.post(this,'productcategory/find',{ query: JSON.stringify(this.query) },function(res){
+      this.com.post(this,'product/find',{ query: JSON.stringify(this.query) },function(res){
           if(res.code){
               that.data = res.params.msg;
               that.total = res.params.total;
@@ -267,7 +258,7 @@ export default {
       
     },
     navTo(path) {
-      this.$router.push({ path: path });
+      this.$router.push({ path: path,query:{id:this.$route.query.id} });
     }
   }
 };
