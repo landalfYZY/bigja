@@ -31,10 +31,10 @@ var nav = {
             {label:'店铺列表',path:'/shop'},
             {label:'新增店铺',path:'/shopInsert'}
         ]},
-        {icon:'record',label:'款项记录',children:[
-            {label:'订单记录',path:'/orderRecord'},
-            {label:'退款记录',path:'/bankCardAdd'},
-            {label:'提现记录',path:'/bankCardAdd'}
+        {icon:'record',label:'优惠券管理',children:[
+            {label:'优惠券列表',path:'/coupon'},
+            {label:'新增优惠券',path:'/couponChange'},
+            {label:'发放记录',path:'/bankCardAdd'}
         ]},
         // {icon:'ios-paper',label:'日志',children:[
         //     {label:'操作日志',path:'#'},

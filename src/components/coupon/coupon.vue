@@ -5,9 +5,8 @@
             <div class="panel-between">
                 <div class="panel-start item-center">
                     <ButtonGroup>
-                        
                         <Button type="ghost" @click="changeUpdate(null,'isDelete',true)"><Icon type="trash-a"></Icon> 删除</Button>
-                        <Button type="ghost" @click="navTo('/goodsInsert_1')"><Icon type="android-add"></Icon> 新增商品</Button>
+                        <Button type="ghost" @click="navTo('/couponChange')"><Icon type="android-add"></Icon> 新增优惠券</Button>
                         <Button type="ghost" @click="outputData()"><Icon type="ios-upload-outline"></Icon> 导出数据</Button>
                     </ButtonGroup>
                     <span class="font-grey" style="margin-left:10px">可以按回车进行筛选</span>
@@ -20,12 +19,9 @@
             </div>
             <div style="margin-top:15px" >
                 <Row :gutter="5">
-            
                     <Col :span="4">
-                        <Input v-model="search1" placeholder="商品 查找" @input="search('productName',1)"  @keydown.enter.native="changePageSize()" />
+                        <Input v-model="search1" placeholder="获取方式 查找" @input="search('getType',1)"  @keydown.enter.native="changePageSize()" />
                     </Col>
-                    
-                    
                     <Col :span="5">
                         <ButtonGroup>
                             <Button @click="changePageSize()">搜索</Button>
@@ -38,7 +34,14 @@
             <div class="panel-end" style="margin-top:15px">
                 <Page :total="total" size="small" show-total show-elevator :page-size="query.pages.size" @on-change="changePage"></Page>
             </div>
-            
+            <Modal v-model="centerDialogVisible" :title="dialogTitle"
+                width="400" @on-ok="onDialogSubmit">
+                <Form :model="formValidate" label-position="top">
+                    <FormItem label="数量">
+                        <Input v-model="count" placeholder="数量" />
+                    </FormItem>
+                </Form>
+            </Modal>
         </div>
     </transition>
 </template>
@@ -54,44 +57,36 @@ export default {
       selection:[],
       pageSizeList: this.com.config.pageSizeList,
       search1: "",
+      centerDialogVisible:false,
+      count:0,
+      sunwouId:'',
       columns: [
         { type: "selection", width: 60, align: "center"},
-        { title: "序号", key: "sort" },
-        { title: "图片", render(h, params){
-            return h("Avatar",{
-                src:params.row.productImage
-            })
+        { title: "描述", key: "des" },
+        { title: "获取方式", key: "getType" },
+        { title: "满价格", key: "full" },
+        { title: "优惠", key: "reduce" },
+        { title: "期限", key: "day" },
+        { title: "数量", render(h,params){
+            return h("div",[
+                h("div",{
+                    style:{display:'inline-block',marginRight:'5px'}
+                },params.row.count),
+                h("a",{
+                    props:{href:'javascript:;'},
+                    on:{
+                        click(){
+                            that.centerDialogVisible = true;
+                            that.count = params.row.count;
+                            that.sunwouId = params.row.sunwouId;
+                        }
+                    }
+                },"修改"),
+            ])
+        }},
+        { title: "max耗资", render(h,params){
+            return h("span",(parseFloat(params.row.reduce)*parseFloat(params.row.count)).toFixed(1))
         } },
-        { title: "商品名称", key: "productName" },
-        { title: "虚拟销量", key: "sale" },
-        { title: "标价", key: "amount" },
-        { title: "售价", key: "discount" },
-        { title: "餐盒费", 
-            render(h, params){
-                return h('i-switch',{
-                    props:{ value:params.row.boxPrice,size:'small',
-                    },
-                    on:{
-                        'on-change'(){
-                            that.changeUpdate(params.row.sunwouId,'boxPrice',!params.row.boxPrice)
-                        }
-                    }
-                })
-            }
-        },
-        { title: "上架状态", 
-            render(h, params){
-                return h('i-switch',{
-                    props:{ value:params.row.able,size:'small',
-                    },
-                    on:{
-                        'on-change'(){
-                            that.changeUpdate(params.row.sunwouId,'able',!params.row.able)
-                        }
-                    }
-                })
-            }
-        },
         {
           title: "操作",
           key: "action",
@@ -99,16 +94,6 @@ export default {
           align: "center",
           render: (h, params) => {
             return h("ButtonGroup", [
-                
-                h("Button",{
-                    props:{type:'ghost',size:"small"},
-                    on:{
-                        click(){
-                            that.$router.push({path:'/goodsInsert_1',query:{id:that.$route.query.id,gid:params.row.sunwouId,title:'修改商品'}})
-                            
-                        }
-                    }
-                },"修改"),
                 h("Button",{props:{type:'ghost',size:"small"},
                     on:{
                         click(){
@@ -141,7 +126,9 @@ export default {
     that.getList();
   },
   methods: {
-   
+    onDialogSubmit(){
+        this.changeUpdate(this.sunwouId,'count',this.count)
+    },
     changeUpdate(id,name,value){
         if(name == "isDelete"){
             this.$Modal.confirm({
@@ -173,7 +160,7 @@ export default {
     doUpdate(id,name,value){
         var data = {ids:id}
         data[name] = value
-        this.com.post(this,'product/update',data,function(res){
+        this.com.post(this,'coupon/update',data,function(res){
             if(res.code){
                 that.$Notice.success({
                     title:res.msg
@@ -207,7 +194,7 @@ export default {
       
     },
     clearFilter(){
-      var li = ['productName']
+      var li = ['getType']
       for(var i=0;i<1;i++){
           this['search'+parseInt(i+1)] = '';
           this.search(li[i],parseInt(i+1))
@@ -241,7 +228,7 @@ export default {
     },
     getList() {
       this.tableLoading = true;
-      this.com.post(this,'product/find',{ query: JSON.stringify(this.query) },function(res){
+      this.com.post(this,'coupon/find',{ query: JSON.stringify(this.query) },function(res){
           if(res.code){
               that.data = res.params.msg;
               that.total = res.params.total;

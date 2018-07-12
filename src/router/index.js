@@ -21,12 +21,15 @@ import gallery from '../components/gallery/gallery'
 import shop from '../components/shop/shop'
 import shopInsert from '../components/shop/shop_insert'
 import shopDetail from '../components/shop/shopDetail'
+import distribution from '../components/shop/distribution'
 
 import category from '../components/goods/category'
 import goods from '../components/goods/goods'
 import specifications from '../components/goods/specifications'
 import goodsInsert from '../components/goods/goodsInsert'
 
+import coupon from '../components/coupon/coupon'
+import couponChange from '../components/coupon/couponChange'
 
 Vue.use(Router)
 
@@ -54,11 +57,13 @@ export default new Router({
         { path: '/category_1', name: '分类列表', component: category },
         { path: '/specifications_1', name: '规格列表', component: specifications },
         { path: '/goodsInsert_1', name: '新增商品', component: goodsInsert },
+        { path: '/distribution', name: '配送地址', component: distribution },
       ]},
 
-      { path: '/shopInsert', name: '新增商店', component: shopInsert },
-      { path: '/goods', name: '商品列表', component: goods },
-      { path: '/category', name: '分类列表', component: category },
+      { path: '/shopInsert', name: '店铺信息', component: shopInsert },
+
+      { path: '/coupon', name: '优惠券列表', component: coupon },
+      { path: '/couponChange', name: '优惠券', component: couponChange },
       
     ]}
   ]

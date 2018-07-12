@@ -72,6 +72,7 @@ export default {
         },
         { title: "店名", key: "shopName" },
         { title: "电话", key: "phone" },
+        { title: "餐盒费", key: "boxPrice" },
         {
           title: "营业状态",
           render(h, params) {
@@ -145,18 +146,6 @@ export default {
                 },
                 "管理店铺"
               ),
-            //   h(
-            //     "Button",
-            //     {
-            //       props: { type: "ghost", size: "small" },
-            //       on: {
-            //         click() {
-            //           that.navTo("/goods");
-            //         }
-            //       }
-            //     },
-            //     "商品"
-            //   )
             ]);
           }
         }
@@ -165,7 +154,7 @@ export default {
       query: {
         fields: [],
         wheres: [
-             { value: "userId", opertionType: "equal", opertionValue: sessionStorage.getItem("userId") },
+             { value: "userId", opertionType: "equal", opertionValue: JSON.parse(sessionStorage.getItem("userId")) },
           { value: "isDelete", opertionType: "equal", opertionValue: false }
         ],
         sorts: [{ value: "createTime", asc: false }],

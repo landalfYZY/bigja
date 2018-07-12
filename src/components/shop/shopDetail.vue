@@ -18,7 +18,7 @@
                 <div  style="margin-top:0px">营业状态：<i-switch v-model="item.openStatus" @on-change="changeUpdate(item.sunwouId,'openStatus',item.openStatus)" size="small"></i-switch></div>
                 <div style="margin-top:10px">配送模式：<i-switch v-model="item.sendMode" @on-change="changeUpdate(item.sunwouId,'sendMode',item.sendMode)" size="small"></i-switch></div>
                 <div style="margin-top:10px">接单模式：<i-switch v-model="item.getMode" @on-change="changeUpdate(item.sunwouId,'getMode',item.getMode)" size="small"></i-switch></div>
-                <div style="margin-top:10px"><a href="javascript:;">修改基础信息</a></div>
+                <div style="margin-top:10px"><a @click="navTo('/shopInsert')" href="javascript:;">修改基础信息</a></div>
             </div>
         </div>
         <Menu mode="horizontal" theme="light" active-name="/goods_1" @on-select="tabsClick">
@@ -34,24 +34,20 @@
                 <Icon type="steam"></Icon>
                 规格库
             </MenuItem>
-            <MenuItem name="4">
+            <MenuItem name="/distribution">
                 <Icon type="settings"></Icon>
-                综合设置
+                配送支持
             </MenuItem>
         </Menu>
         <div style="margin-top:20px">
             <router-view></router-view>
         </div>
+        
     </div>
 </template>
 <script>
-import category from '../goods/category';
-import goods from '../goods/goods'
 var that;
 export default {
-  components:{
-      category,goods
-  },
   data() {
     return {
       shopDetail: []
@@ -63,6 +59,9 @@ export default {
     this.tabsClick("/goods_1")
   },
   methods: {
+    navTo(path) {
+      this.$router.push({ path: path ,query:{id:this.$route.query.id}});
+    },
     changeUpdate(id,name,value){
         if(name == "isDelete"){
             this.$Modal.confirm({
@@ -103,7 +102,12 @@ export default {
         })
     },
     tabsClick(e){
-        this.$router.push({path:e,query:{id:this.$route.query.id}})
+        if(e == '/distribution'){
+            this.$router.push({path:e,query:{id:this.$route.query.id,range:this.shopDetail[0].range ? JSON.stringify(this.shopDetail[0].range):JSON.stringify([])}})
+        }else{
+            this.$router.push({path:e,query:{id:this.$route.query.id}})
+        }
+        
     },
     getShopDetail() {
       this.com.find(this, "shop/find", "shopDetail", {
