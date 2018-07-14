@@ -9,7 +9,7 @@ var nav = {
             {label:'图库列表',path:'/gallery'},
         ]},
         {icon:'printer',label:'接单管理',children:[
-            {label:'接单面板',path:'/receiptPanel'},
+            {label:'接单面板',path:'/getorder'},
             {label:'接单记录',path:'/carousel'},
         ]},
         {icon:'network',label:'角色管理',children:[
@@ -18,6 +18,10 @@ var nav = {
             {label:'权限列表',path:'/power'},
             {label:'新增权限',path:'/powerInsert'},
             {label:'新增权限分类',path:'/powerCategory'},
+        ]},
+        {icon:'network',label:'组织架构管理',children:[
+            {label:'员工列表',path:'/orgnizationUser'},
+            {label:'新增员工',path:'/orgnizationUserInsert'},
         ]},
         {icon:'ios-book',label:'收银管理',children:[
             {label:'收银员',path:'/student'},
@@ -36,12 +40,6 @@ var nav = {
             {label:'新增优惠券',path:'/couponChange'},
             {label:'发放记录',path:'/bankCardAdd'}
         ]},
-        // {icon:'ios-paper',label:'日志',children:[
-        //     {label:'操作日志',path:'#'},
-        //     {label:'系统日志',path:'#'},
-        //     {label:'系统更新日志',path:'#'},
-        //     {label:'异常分析',path:'#'}
-        // ]},
         {icon:'ios-gear',label:'系统设置',children:[
             {label:'打印设置',path:'/printSet'},
             {label:'系统基础设置',path:'#'}

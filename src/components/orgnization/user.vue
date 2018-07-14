@@ -1,12 +1,12 @@
 <template>
     <transition name="el-fade-in-linear">
         <div>
-            
             <div class="panel-between">
                 <div class="panel-start item-center">
                     <ButtonGroup>
+                        
                         <Button type="ghost" @click="changeUpdate(null,'isDelete',true)"><Icon type="trash-a"></Icon> 删除</Button>
-                        <Button type="ghost" @click="navTo('/couponChange')"><Icon type="android-add"></Icon> 新增优惠券</Button>
+                        <Button type="ghost" @click="navTo('/orgnizationUserInsert')"><Icon type="android-add"></Icon> 新增员工</Button>
                         <Button type="ghost" @click="outputData()"><Icon type="ios-upload-outline"></Icon> 导出数据</Button>
                     </ButtonGroup>
                     <span class="font-grey" style="margin-left:10px">可以按回车进行筛选</span>
@@ -19,9 +19,14 @@
             </div>
             <div style="margin-top:15px" >
                 <Row :gutter="5">
+            
                     <Col :span="4">
-                        <Input v-model="search1" placeholder="获取方式 查找" @input="search('getType',1)"  @keydown.enter.native="changePageSize()" />
+                        <Input v-model="search1" placeholder="姓名 查找" @input="search('name',1)"  @keydown.enter.native="changePageSize()" />
                     </Col>
+                    <Col :span="4">
+                        <Input v-model="search2" placeholder="职位 查找" @input="search('type',2)" @keydown.enter.native="changePageSize()" />
+                    </Col>
+                    
                     <Col :span="5">
                         <ButtonGroup>
                             <Button @click="changePageSize()">搜索</Button>
@@ -34,14 +39,7 @@
             <div class="panel-end" style="margin-top:15px">
                 <Page :total="total" size="small" show-total show-elevator :page-size="query.pages.size" @on-change="changePage"></Page>
             </div>
-            <Modal v-model="centerDialogVisible" title="发放数量"
-                width="400" @on-ok="onDialogSubmit">
-                <Form  label-position="top">
-                    <FormItem label="数量">
-                        <Input v-model="count" placeholder="数量" />
-                    </FormItem>
-                </Form>
-            </Modal>
+            
         </div>
     </transition>
 </template>
@@ -49,44 +47,21 @@
 <script>
 var that;
 export default {
-
   data() {
     return {
-      tableLoading:false,
+      tableLoading: false,
       total: 0,
-      selection:[],
+      selection: [],
       pageSizeList: this.com.config.pageSizeList,
       search1: "",
-      centerDialogVisible:false,
-      count:0,
-      sunwouId:'',
+      search2: "",
+      search3: "",
       columns: [
-        { type: "selection", width: 60, align: "center"},
-        { title: "描述", key: "des" },
-        { title: "获取方式", key: "getType" },
-        { title: "满价格", key: "full" },
-        { title: "优惠", key: "reduce" },
-        { title: "期限", key: "day" },
-        { title: "数量", render(h,params){
-            return h("div",[
-                h("div",{
-                    style:{display:'inline-block',marginRight:'5px'}
-                },params.row.count),
-                h("a",{
-                    props:{href:'javascript:;'},
-                    on:{
-                        click(){
-                            that.centerDialogVisible = true;
-                            that.count = params.row.count;
-                            that.sunwouId = params.row.sunwouId;
-                        }
-                    }
-                },"修改"),
-            ])
-        }},
-        { title: "max耗资", render(h,params){
-            return h("span",(parseFloat(params.row.reduce)*parseFloat(params.row.count)).toFixed(1))
-        } },
+        { type: "selection", width: 60, align: "center" },
+        { title: "姓名", key: "name" },
+        { title: "职位", key: "type" },
+        { title: "登录名", key: "userName" },
+        { title: "创建时间", key: "createTime" },
         {
           title: "操作",
           key: "action",
@@ -94,13 +69,18 @@ export default {
           align: "center",
           render: (h, params) => {
             return h("ButtonGroup", [
-                h("Button",{props:{type:'ghost',size:"small"},
-                    on:{
-                        click(){
-                            that.changeUpdate(params.row.sunwouId,'isDelete',true)
-                        }
+              h(
+                "Button",
+                {
+                  props: { type: "ghost", size: "small" },
+                  on: {
+                    click() {
+                     
                     }
-                },"删除"),
+                  }
+                },
+                "管理店铺"
+              ),
             ]);
           }
         }
@@ -109,10 +89,10 @@ export default {
       query: {
         fields: [],
         wheres: [
-          { value: "shopId", opertionType: "equal", opertionValue: '' },
+             { value: "groupId", opertionType: "equal", opertionValue: JSON.parse(sessionStorage.getItem("userId")) },
           { value: "isDelete", opertionType: "equal", opertionValue: false }
         ],
-        sorts: [{ value: "sort", asc: true }],
+        sorts: [{ value: "createTime", asc: false }],
         pages: {
           currentPage: 1,
           size: 10
@@ -122,13 +102,9 @@ export default {
   },
   mounted() {
     that = this;
-    this.query.wheres[0].opertionValue = this.$route.query.id;
     that.getList();
   },
   methods: {
-    onDialogSubmit(){
-        this.changeUpdate(this.sunwouId,'count',this.count)
-    },
     changeUpdate(id,name,value){
         if(name == "isDelete"){
             this.$Modal.confirm({
@@ -153,14 +129,14 @@ export default {
             if(this.selection.length > 0){
                 that.doUpdate(this.selection.toString(),name,value)
             }else{
-                that.$Message.info("还没选商品呢")
+                that.$Message.info("还没选类目呢")
             }
         }
     },
     doUpdate(id,name,value){
         var data = {ids:id}
         data[name] = value
-        this.com.post(this,'coupon/update',data,function(res){
+        this.com.post(this,'user/update',data,function(res){
             if(res.code){
                 that.$Notice.success({
                     title:res.msg
@@ -176,11 +152,11 @@ export default {
       }
       that.selection = li;
     },
-    
+
     outputData() {
-      if(this.data.length == 0){
+      if (this.data.length == 0) {
         this.$Message.warning("无数据可导出");
-      }else{
+      } else {
         this.$refs.selection.exportCsv({
           filename:
             "shop-" +
@@ -191,17 +167,16 @@ export default {
           data: this.data
         });
       }
-      
     },
-    clearFilter(){
-      var li = ['getType']
-      for(var i=0;i<1;i++){
-          this['search'+parseInt(i+1)] = '';
-          this.search(li[i],parseInt(i+1))
+    clearFilter() {
+      var li = ["name", "type"];
+      for (var i = 0; i < 2; i++) {
+        this["search" + parseInt(i + 1)] = "";
+        this.search(li[i], parseInt(i + 1));
       }
       this.getList();
     },
-    
+
     changePageSize() {
       this.getList();
     },
@@ -209,7 +184,7 @@ export default {
       this.query.pages.currentPage = e;
       this.getList();
     },
-    search(tag,num) {
+    search(tag, num) {
       var temp = -1;
       for (var i in this.query.wheres) {
         if (this.query.wheres[i].value == tag) {
@@ -219,25 +194,31 @@ export default {
       if (temp == -1) {
         this.query.wheres.push({
           value: tag,
-          opertionType: typeof this['search'+num] == 'boolean' ? "equal":'like',
-          opertionValue: this['search'+num]
+          opertionType:
+            typeof this["search" + num] == "boolean" ? "equal" : "like",
+          opertionValue: this["search" + num]
         });
       } else {
-        this.query.wheres[temp].opertionValue = this['search'+num];
+        this.query.wheres[temp].opertionValue = this["search" + num];
       }
     },
     getList() {
       this.tableLoading = true;
-      this.com.post(this,'coupon/find',{ query: JSON.stringify(this.query) },function(res){
-          if(res.code){
-              that.data = res.params.msg;
-              that.total = res.params.total;
+      this.com.post(
+        this,
+        "user/find",
+        { query: JSON.stringify(this.query) },
+        function(res) {
+          if (res.code) {
+            that.data = res.params.msg;
+            that.total = res.params.total;
           }
-      },"tableLoading")
-      
+        },
+        "tableLoading"
+      );
     },
-    navTo(path) {
-      this.$router.push({ path: path,query:{id:this.$route.query.id} });
+    navTo(path,query) {
+      this.$router.push({ path: path ,query:query});
     }
   }
 };

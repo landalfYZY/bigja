@@ -198,8 +198,16 @@ export default {
     handleSubmit(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
+          
           that.formValidate.attributes = that.attributeCategorys.toString();
           that.formValidate.shopId = that.$route.query.id;
+          if(that.$route.query.title){
+            delete that.formValidate.attributeCategorys
+          
+            that.formValidate.ids = that.formValidate.sunwouId
+            delete that.formValidate.sunwouId;
+          }
+          
           var url = "add";
           if(that.$route.query.title){
               url = "update"

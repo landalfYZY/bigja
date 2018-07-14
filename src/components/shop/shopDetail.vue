@@ -38,6 +38,10 @@
                 <Icon type="settings"></Icon>
                 配送支持
             </MenuItem>
+            <MenuItem name="/shopCoupon">
+                <Icon type="settings"></Icon>
+                店铺优惠
+            </MenuItem>
         </Menu>
         <div style="margin-top:20px">
             <router-view></router-view>
@@ -104,6 +108,8 @@ export default {
     tabsClick(e){
         if(e == '/distribution'){
             this.$router.push({path:e,query:{id:this.$route.query.id,range:this.shopDetail[0].range ? JSON.stringify(this.shopDetail[0].range):JSON.stringify([])}})
+        }else if(e == '/shopCoupon'){
+            this.$router.push({path:e,query:{id:this.$route.query.id,fullReduce:this.shopDetail[0].fullReduce}})
         }else{
             this.$router.push({path:e,query:{id:this.$route.query.id}})
         }

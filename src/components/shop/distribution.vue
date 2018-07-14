@@ -3,7 +3,7 @@
         <div class="panel-between" style="margin-bottom:20px">
             <div class="panel-start item-center">
                 <ButtonGroup>
-                    <Button type="ghost" @click="dialogTitle = '新增地址',centerDialogVisible = true"><Icon type="android-add"></Icon> 新增地址</Button>
+                    <Button type="ghost" @click="dialogTitle = '新增地址',tempIndex=-1,centerDialogVisible = true"><Icon type="android-add"></Icon> 新增地址</Button>
                 </ButtonGroup>
             </div>
         </div>

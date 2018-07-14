@@ -22,6 +22,7 @@ import shop from '../components/shop/shop'
 import shopInsert from '../components/shop/shop_insert'
 import shopDetail from '../components/shop/shopDetail'
 import distribution from '../components/shop/distribution'
+import shopCoupon from '../components/shop/coupon'
 
 import category from '../components/goods/category'
 import goods from '../components/goods/goods'
@@ -30,6 +31,11 @@ import goodsInsert from '../components/goods/goodsInsert'
 
 import coupon from '../components/coupon/coupon'
 import couponChange from '../components/coupon/couponChange'
+
+import orgnizationUser from '../components/orgnization/user'
+import orgnizationUserInsert from '../components/orgnization/userInsert'
+
+import getorder  from '../components/getOrder/getOrder'
 
 Vue.use(Router)
 
@@ -58,6 +64,7 @@ export default new Router({
         { path: '/specifications_1', name: '规格列表', component: specifications },
         { path: '/goodsInsert_1', name: '新增商品', component: goodsInsert },
         { path: '/distribution', name: '配送地址', component: distribution },
+        { path: '/shopCoupon', name: '店铺优惠', component: shopCoupon },
       ]},
 
       { path: '/shopInsert', name: '店铺信息', component: shopInsert },
@@ -65,6 +72,10 @@ export default new Router({
       { path: '/coupon', name: '优惠券列表', component: coupon },
       { path: '/couponChange', name: '优惠券', component: couponChange },
       
+      { path: '/orgnizationUser', name: '组织架构', component: orgnizationUser },
+      { path: '/orgnizationUserInsert', name: '新增用户', component: orgnizationUserInsert },
+
+      { path: '/getorder', name: '接单列表', component: getorder },
     ]}
   ]
 })
