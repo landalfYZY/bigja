@@ -10,6 +10,7 @@
                     <span class="font-grey" style="margin-left:10px">可以按回车进行筛选</span>
                 </div>
                 <div class="panel-end">
+                    <Button type="ghost" @click="getList()">刷新</Button>
                     <Select v-model="query.pages.size" style="width:100px;margin-left:20px" @on-change="changePageSize()">
                         <Option v-for="item in pageSizeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                     </Select>
@@ -40,7 +41,11 @@
 
 <script>
 var that;
+import tableexpend from "../template/tableexpend";
 export default {
+  components: {
+    tableexpend
+  },
   data() {
     return {
       tableLoading: false,
@@ -51,11 +56,24 @@ export default {
       search2: "",
       search3: "",
       columns: [
+        {
+          type: "expand",
+          width: 50,
+          render: (h, params) => {
+            return h(tableexpend, {
+              props: {
+                row: params.row.ops
+              }
+            });
+          }
+        },
         { type: "selection", width: 60, align: "center" },
-        { title: "货号/姓名", key: "waterNumber",
-            render (h,params) {
-                return h("div",params.row.waterNumber)
-            }
+        {
+          title: "姓名/货号",
+          key: "waterNumber",
+          render(h, params) {
+            return h("div", params.row.concatName+'/'+params.row.waterNumber);
+          }
         },
         { title: "取货方式", key: "getType" },
         { title: "商品数量", key: "productCount" },
@@ -68,51 +86,49 @@ export default {
           width: 150,
           align: "center",
           render: (h, params) => {
-              var te = null;
-            if(params.row.status == "待接手"){
-               te =  h(
+            var te = null;
+            if (params.row.status == "待接手") {
+              te = h(
                 "Button",
                 {
                   props: { type: "ghost", size: "small" },
                   on: {
                     click() {
-                        that.accept(params.row.sunwouId,"accept")
+                      that.accept(params.row.sunwouId, "accept");
                     }
                   }
                 },
                 "接单"
-              )
-            }else if(params.row.status == "制作中"){
-                te =  h(
+              );
+            } else if (params.row.status == "制作中") {
+              te = h(
                 "Button",
                 {
                   props: { type: "ghost", size: "small" },
                   on: {
                     click() {
-                        that.accept(params.row.sunwouId,"noti")
+                      that.accept(params.row.sunwouId, "noti");
                     }
                   }
                 },
                 "制作完成"
-              )
-            }else if(params.row.status == "待取货"){
-                te =  h(
+              );
+            } else if (params.row.status == "待取货") {
+              te = h(
                 "Button",
                 {
                   props: { type: "ghost", size: "small" },
                   on: {
                     click() {
-                        that.accept(params.row.sunwouId,"complete")
+                      that.accept(params.row.sunwouId, "complete");
                     }
                   }
                 },
                 "完成交易"
-              )
+              );
             }
-            var sm = h("ButtonGroup", [
-              te
-            ]);
-            return sm
+            var sm = h("ButtonGroup", [te]);
+            return sm;
           }
         }
       ],
@@ -120,7 +136,8 @@ export default {
       query: {
         fields: [],
         wheres: [
-          { value: "status", opertionType: "equal", opertionValue: '待接手' },
+          { value: "shopId", opertionType: "equal", opertionValue: "" },
+          { value: "status", opertionType: "equal", opertionValue: "待接手" },
           { value: "isDelete", opertionType: "equal", opertionValue: false }
         ],
         sorts: [{ value: "createTime", asc: false }],
@@ -133,32 +150,33 @@ export default {
   },
   mounted() {
     that = this;
+    this.query.wheres[0].opertionValue = this.$route.query.id;
     that.getList();
   },
   methods: {
-    tabsClick(e){
-        for(var i in this.query.wheres){
-            if(this.query.wheres[i].value == "status"){
-                this.query.wheres[i].opertionValue = e
-            }
+    tabsClick(e) {
+      for (var i in this.query.wheres) {
+        if (this.query.wheres[i].value == "status") {
+          this.query.wheres[i].opertionValue = e;
         }
-        this.getList()
+      }
+      this.getList();
     },
-    accept(id,name){
-        var data = {
-            orderId:id
+    accept(id, name) {
+      var data = {
+        orderId: id
+      };
+      if (name == "accept") {
+        data.acceptId = JSON.parse(sessionStorage.getItem("userId"));
+      }
+      this.com.post(this, "order/" + name, data, function(res) {
+        if (res.code) {
+          that.$Notice.success({
+            title: res.msg
+          });
+          that.getList();
         }
-        if(name == "accept"){
-            data.acceptId =JSON.parse(sessionStorage.getItem("userId"))
-        }
-        this.com.post(this,'order/'+name,data,function(res){
-            if(res.code){
-                that.$Notice.success({
-                    title:res.msg
-                })
-                that.getList();
-            }
-        })
+      });
     },
     getSelected(e) {
       var li = [];
@@ -232,8 +250,8 @@ export default {
         "tableLoading"
       );
     },
-    navTo(path,query) {
-      this.$router.push({ path: path ,query:query});
+    navTo(path, query) {
+      this.$router.push({ path: path, query: query });
     }
   }
 };

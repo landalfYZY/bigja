@@ -89,7 +89,7 @@ export default {
       query: {
         fields: [],
         wheres: [
-             { value: "groupId", opertionType: "equal", opertionValue: JSON.parse(sessionStorage.getItem("userId")) },
+             { value: "parentId", opertionType: "equal", opertionValue: JSON.parse(sessionStorage.getItem("userId")) },
           { value: "isDelete", opertionType: "equal", opertionValue: false }
         ],
         sorts: [{ value: "createTime", asc: false }],

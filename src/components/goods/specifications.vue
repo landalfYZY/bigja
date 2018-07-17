@@ -88,7 +88,7 @@ export default {
       formValidate:{
           name:'',
           sort:0,
-          parentId:JSON.parse(sessionStorage.getItem("userId")),
+          parentId:JSON.parse(sessionStorage.getItem("user")).groupId ? JSON.parse(sessionStorage.getItem("user")).parentId:JSON.parse(sessionStorage.getItem("user")).sunwouId,
           des:''
       },
       canValue:{
@@ -170,7 +170,7 @@ export default {
       query: {
         fields: [],
         wheres: [
-          { value: "parentId", opertionType: "equal", opertionValue: JSON.parse(sessionStorage.getItem("userId")) },
+          { value: "parentId", opertionType: "equal", opertionValue: JSON.parse(sessionStorage.getItem("user")).groupId ? JSON.parse(sessionStorage.getItem("user")).parentId:JSON.parse(sessionStorage.getItem("userId")) },
           { value: "isDelete", opertionType: "equal", opertionValue: false }
         ],
         sorts: [{ value: "sort", asc: true }],

@@ -8,10 +8,6 @@ var nav = {
         {icon:'images',label:'图库管理',children:[
             {label:'图库列表',path:'/gallery'},
         ]},
-        {icon:'printer',label:'接单管理',children:[
-            {label:'接单面板',path:'/getorder'},
-            {label:'接单记录',path:'/carousel'},
-        ]},
         {icon:'network',label:'角色管理',children:[
             {label:'角色列表',path:'/role'},
             {label:'新增角色',path:'/roleInsert'},

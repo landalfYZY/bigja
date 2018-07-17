@@ -12,11 +12,16 @@
         <FormItem label="登录密码" prop="passWord" style="max-width:400px">
             <Input v-model="formValidate.passWord" placeholder="登录密码"></Input>
         </FormItem>
-        <FormItem label="角色" prop="groupId" style="max-width:400px">
+        <FormItem label="所属店铺" prop="groupId" style="max-width:400px">
+            <Select v-model="formValidate.groupId" >
+                <Option v-for="item in shop" :value="item.sunwouId" :key="item.sunwouId">{{ item.shopName }}</Option>
+            </Select>
+        </FormItem>
+        <!-- <FormItem label="角色" prop="roleId" style="max-width:400px">
             <Select v-model="formValidate.roleId" >
                 <Option v-for="item in role" :value="item.sunwouId" :key="item.sunwouId">{{ item.des }}</Option>
             </Select>
-        </FormItem>
+        </FormItem> -->
         <FormItem>
             <Button type="primary" @click="handleSubmit('formValidate')">保存提交</Button>
             <Button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
@@ -29,27 +34,30 @@ var that;
         data () {
             return {
                 role:[],
+                shop:[],
                 loading:false,
                 formValidate: {
                     type:'',
                     name: '',
-                    groupId: JSON.parse(sessionStorage.getItem("userId")),
+                    groupId: '',
+                    parentId: JSON.parse(sessionStorage.getItem("userId")),
                     userName:'',
                     passWord:'',
-                    roleId:'',
+                    // roleId:'',
                 },
                 ruleValidate: {
+                    parentId:[{required: true, message: '必填', trigger: 'blur'}],
                     type: [  { required: true, message: '必填', trigger: 'blur' } ],
                     name: [  { required: true, message: '必填', trigger: 'blur' } ],
                     userName: [  { required: true, message: '必填', trigger: 'blur' } ],
                     passWord: [  { required: true, message: '必填', trigger: 'blur' } ],
-                    roleId: [  { required: true, message: '必填', trigger: 'blur' } ]
+                    // roleId: [  { required: true, message: '必填', trigger: 'blur' } ]
                 }
             }
         },
         mounted(){
             that = this;
-            this.getRole();
+            this.getShop();
         },
         methods: {
             getRole() {
@@ -59,8 +67,26 @@ var that;
                         that.role = res.params.msg;
                     }
                 },'tableLoading')
-                
-                },
+            },
+            getShop() {
+                this.tableLoading = true;
+                that.com.post(this,'shop/find',{query:JSON.stringify({
+                    fields: [],
+                    wheres: [
+                        { value: "userId", opertionType: "equal", opertionValue: JSON.parse(sessionStorage.getItem("userId")) },
+                    { value: "isDelete", opertionType: "equal", opertionValue: false }
+                    ],
+                    sorts: [{ value: "createTime", asc: false }],
+                    pages: {
+                    currentPage: 1,
+                    size: 10
+                    }
+                })},function(res){
+                    if (res.code) {
+                        that.shop = res.params.msg;
+                    }
+                },'tableLoading')
+            },
             handleSubmit (name) {
                 this.loading = true;
                 

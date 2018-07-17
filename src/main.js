@@ -14,8 +14,11 @@ import com from './assets/js/common';
 import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
 import 'quill/dist/quill.bubble.css';
+
+
 Vue.use(vueQuillEditor);
 Vue.prototype.com = com;
+Vue.prototype.webso = null;
 Vue.config.productionTip = false;
 Vue.use(iView);
 Vue.use(ElementUI);

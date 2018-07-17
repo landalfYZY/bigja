@@ -78,7 +78,7 @@ export default {
         })
       },null,function(res){
           if(res.code){
-              that.range = res.params.msg[0].range
+              that.range = res.params.msg[0].range ? res.params.msg[0].range:[]
           }
       });
     },

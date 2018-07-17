@@ -80,6 +80,7 @@ export default {
         productImage:"",
         amount: "",
         sale: 0,
+        boxPrice:false,
         discount:"",
         attributes:"",
         able: true,

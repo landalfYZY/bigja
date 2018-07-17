@@ -2,6 +2,9 @@
     <transition name="el-fade-in-linear">
         <div>
             <BackTop></BackTop>
+            <audio id="audio" src="/static/audio/blk.mp3">
+                您的浏览器不支持 audio 标签。
+            </audio>
             <Layout >
                 <Header>
                     <Menu mode="horizontal" theme="dark"  @on-select="meunSelect">
@@ -21,10 +24,10 @@
                             </div>
                             <div class="panel-end item-center">
                                 <Badge count="0">
-                                    <Button type="ghost" icon="ios-chatboxes-outline" size="small" style="color:#fff;font-size:16px"></Button>
+                                    <Button @click="initWebSocket()" type="ghost" icon="ios-chatboxes-outline" size="small" style="color:#fff;font-size:16px"></Button>
                                 </Badge>
                                 <Badge count="0" style="margin-left:20px">
-                                    <Button type="ghost" icon="ios-bell-outline" size="small" style="color:#fff;font-size:16px"></Button>
+                                    <Button  type="ghost" icon="ios-bell-outline" size="small" style="color:#fff;font-size:16px"></Button>
                                 </Badge>
                                 <Dropdown trigger="click"  style="margin-left:50px">
                                     <a href="javascript:void(0)" style="display:block">
@@ -63,7 +66,7 @@
                     <Breadcrumb :style="{margin: '16px 0'}">
                         <BreadcrumbItem v-for="(item,index) in routes" :key="index">{{item.name}}</BreadcrumbItem>
                     </Breadcrumb>
-                    <Content :style="{padding: '24px 0', minHeight: contentHeight+'px', background: '#fff'}">
+                    <Content v-if="unType == 1" :style="{padding: '24px 0', minHeight: contentHeight+'px', background: '#fff'}">
                         <Layout>
                             <Sider hide-trigger :style="{background: '#fff'}">
                             <!-- <Cascader v-model="searchNavText" :data="navUrl.items" filterable></Cascader> -->
@@ -92,6 +95,7 @@
                             </Content>
                         </Layout>
                     </Content>
+                    <div v-if="unType == 2" style="background:#fff;padding:30px"><router-view></router-view></div>
                 </Layout>
                 <Footer class="layout-footer-center">2018 &copy; 浙江大家地理信息科技有限公司</Footer>
             </Layout>
@@ -104,44 +108,107 @@ var that;
 export default {
   data() {
     return {
-      activeName: "/overview",
+      unType: 1,
+      activeName: "",
       user: "",
       searchNavText: "",
       contentHeight: 0,
       routes: [],
-      navUrl: navUrl.nav
+      navUrl: navUrl.nav,
+      websock: null
     };
   },
   watch: {
     $route() {
-      this.routes = this.$route.matched;
-      if (this.$route.fullPath == "/main" || this.$route.fullPath == "/") {
-        this.meunSelect("/overview");
-        this.activeName = "/overview";
-      } else {
-        this.activeName = this.$route.fullPath;
-      }
+      this.initNav();
     }
   },
   mounted() {
     that = this;
     that.initMain();
-    that.connectSocket();
+    
+    if (this.unType == 2) {
+        that.initWebSocket();
+    }
+    // this.websock = this.com.connectSocket();
   },
   methods: {
-    connectSocket(){
-        // var socket = new WebSocket(url, [protocol] );
+    threadPoxi() {
+      // 实际调用的方法
+      //参数
+      const agentData = "mymessage";
+      //若是ws开启状态
+      if (this.websock.readyState === this.websock.OPEN) {
+        this.websocketsend(agentData);
+      } else if (this.websock.readyState === this.websock.CONNECTING) {
+        // 若是 正在开启状态，则等待300毫秒
+        let that = this; //保存当前对象this
+        setTimeout(function() {
+          that.websocketsend(agentData);
+        }, 300);
+      } else {
+        // 若未开启 ，则等待500毫秒
+        this.initWebSocket();
+        let that = this; //保存当前对象this
+        setTimeout(function() {
+          that.websocketsend(agentData);
+        }, 500);
+      }
+    },
+    initWebSocket() {
+      //初始化weosocket
+      //ws地址
+      this.websock =  this.com.connectSocket(this.user.groupId); 
+      this.websock.onmessage = this.websocketonmessage;
+      this.websock.onclose = this.websocketclose;
+      this.com.tempSw = this.websock;
+    },
+    websocketonmessage(e) {
+      var received_msg = JSON.parse(e.data);
+        document.getElementById("audio").play();
+        that.$Notice.info({
+          title: "您有新订单",
+          desc: "请及时处理"
+        });
+       that.$router.push({path:'getorder_1',query:{id:this.user.groupId}})
+    },
+    websocketsend(agentData) {
+      //数据发送
+      this.websock.send(agentData);
+    },
+    websocketclose(e) {
+      //关闭
+      console.log("connection closed (" + e.code + ")");
+    },
+    initNav() {
+      this.routes = this.$route.matched;
+      if (this.$route.fullPath == "/main" || this.$route.fullPath == "/") {
+        if (this.user.groupId != null ) {
+          this.unType = 2;
+          this.$router.push({
+            path: "/shopDetail",
+            query: { id: this.user.groupId }
+          });
+          this.activeName = "/shopDetail";
+        } else {
+          this.unType = 1;
+          this.meunSelect("/overview");
+          this.activeName = "/overview";
+        }
+      } else {
+        if (this.user.groupId != null ) {
+          this.unType = 2;
+        } else {
+          this.unType = 1;
+          this.activeName = this.$route.fullPath;
+        }
+      }
     },
     initMain() {
       if (sessionStorage.getItem("user")) {
         this.user = JSON.parse(sessionStorage.getItem("user"));
         this.windowResize();
-        this.routes = this.$route.matched;
-        if (this.$route.fullPath == "/main" || this.$route.fullPath == "/") {
-          this.meunSelect("/overview");
-        } else {
-          this.activeName = this.$route.fullPath;
-        }
+        this.initNav();
       } else {
         this.$router.push("/login");
       }
@@ -156,6 +223,9 @@ export default {
       if (e == "/login") {
         sessionStorage.removeItem("user");
         localStorage.setItem("autoLogin", false);
+        if(this.unType == 2){
+            this.websock.close()
+        }
       }
       this.$router.push(e);
     }

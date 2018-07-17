@@ -1,7 +1,10 @@
-var API = 'http://192.168.31.250/jf/';
+//var API = 'http://192.168.31.250/jf/';
 //var API = 'http://192.168.43.25/jf/';
-//var API = 'https://www.sunwou.com/dk/'
+var API = 'https://www.sunwou.com/dk/'
+//var SOCKET = 'ws://192.168.31.250/jf/ws/socket?shopId=';
+var SOCKET = 'wss://www.sunwou.com/dk/ws/socket?shopId=';
 var APPID = 'wx9676e5a723951d1a';
+var tempSw = null;
 var config = {
     pageSize:10,
     pageSizeList:[
@@ -12,6 +15,12 @@ var config = {
     ]
 };
 
+function connectSocket(shopId){
+
+    var ws = new WebSocket(SOCKET+shopId);
+
+    return ws;
+}
 var globleData = {
     token:'',
     tempImages:[]
@@ -105,5 +114,8 @@ module.exports = {
     login:login,
     APPID:APPID,
     query:query,
-    http:http
+    http:http,
+    SOCKET:SOCKET,
+    connectSocket:connectSocket,
+    tempSw:tempSw
 }

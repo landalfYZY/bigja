@@ -58,8 +58,15 @@ export default {
         { type: "selection", width: 60, align: "center"},
         { title: "序号", key: "sort" },
         { title: "图片", render(h, params){
-            return h("Avatar",{
-                src:params.row.productImage
+            return h("div",{
+                style:{
+                    backgroundColor:'#f3f3f3',
+                    backgroundImage:'url('+params.row.productImage+')',
+                    backgroundSize:'cover',
+                    backgroundPosition:'center',
+                    width:'30px',
+                    height:'30px',
+                }
             })
         } },
         { title: "商品名称", key: "productName" },

@@ -86,8 +86,11 @@ export default {
               "userId",
               JSON.stringify(res.params.msg.sunwouId)
             );
-            that.$router.push({ path: "/overview" });
-
+            if(res.params.msg.groupId != null){
+              that.$router.push({ path: "/shopDetail",query:{id:res.params.msg.groupId} });
+            }else{
+              that.$router.push({ path: "/overview" });
+            }
             localStorage.setItem("remember", that.remember);
             localStorage.setItem("autoLogin", that.autoLogin);
 

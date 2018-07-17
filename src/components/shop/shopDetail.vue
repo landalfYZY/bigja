@@ -1,5 +1,6 @@
 <template>
     <div>
+        
         <div class="panel-start" style="background:#f3f3f3;padding:15px" v-for="item in shopDetail" :key="item.sunwouId">
             <div>
                 <div style="height:100px;min-width:120px;background:#ffffff" v-if="item.shopImage">
@@ -20,8 +21,26 @@
                 <div style="margin-top:10px">接单模式：<i-switch v-model="item.getMode" @on-change="changeUpdate(item.sunwouId,'getMode',item.getMode)" size="small"></i-switch></div>
                 <div style="margin-top:10px"><a @click="navTo('/shopInsert')" href="javascript:;">修改基础信息</a></div>
             </div>
+            <div style="margin-left:40px">
+                <div style="background:#fff;padding:10px;width:200px">
+                    <div class="panel-between">
+                        <div>店铺公告</div>
+                        <a href="javascript:;" @click="shopNotice = true,id=item.sunwouId,notice=item.notice">修改</a>
+                    </div>
+                    <div style="color:#888">
+                        {{item.notice}}
+                    </div>
+                </div>
+            </div>
         </div>
-        <Menu mode="horizontal" theme="light" active-name="/goods_1" @on-select="tabsClick">
+        <Modal  v-model="shopNotice" title="店铺公告"  width="300" on-cancel="取消" on-text="确定" @on-ok="changeUpdate(id,'notice',notice)">
+            <Input type="textarea" v-model="notice" />
+        </Modal>
+        <Menu mode="horizontal" theme="light" active-name="/getorder_1" @on-select="tabsClick">
+            <MenuItem name="/getorder_1">
+                <Icon type="coffee"></Icon>
+                订单
+            </MenuItem>
             <MenuItem name="/goods_1">
                 <Icon type="coffee"></Icon>
                 商品
@@ -54,13 +73,16 @@ var that;
 export default {
   data() {
     return {
-      shopDetail: []
+      id:'',notice:'',
+      shopDetail: [],
+      shopNotice:false
     };
   },
   mounted() {
     that = this;
     this.getShopDetail();
-    this.tabsClick("/goods_1")
+    this.tabsClick("/getorder_1")
+
   },
   methods: {
     navTo(path) {
@@ -103,6 +125,7 @@ export default {
                     title:res.msg
                 })
             }
+            that.getShopDetail();
         })
     },
     tabsClick(e){

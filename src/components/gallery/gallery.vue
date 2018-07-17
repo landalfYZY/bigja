@@ -49,7 +49,7 @@
                         </Breadcrumb>
                     </div>
                 </div>
-                <div>占用空间 1.5M</div>
+                <div>占用空间 0M</div>
             </div>
         </div>
         <div style="width:100%">
@@ -72,7 +72,7 @@
                         <div v-if="textLine" class="ell dispanel panel-between" :style="{marginTop:(panelWidth-48)+'px',height:'30px'}">
                             <div class="bitems" title="重命名"><Icon type="edit"></Icon></div>
                             <div class="bitems" title="复制"><Icon type="reply"></Icon></div>
-                            <div class="bitems" title="删除"><Icon type="trash-a"></Icon></div>
+                            <div class="bitems" title="删除" @click="changeUpdate(item.sunwouId,'isDelete',true)"><Icon type="trash-a"></Icon></div>
                         </div>
                     </div>
                     <div class="ell">{{item.fileName}}</div>
@@ -80,7 +80,7 @@
             </Row>
         </div>
         <div class="ult-wiss panel-end item-center" >
-            <Page :total="total" size="small" show-elevator ></Page>
+            <Page :total="total" size="small" show-elevator :page-size="fileQuery.pages.size" @on-change="changePage"></Page>
         </div>
     </div>
 </template>
@@ -98,6 +98,7 @@ export default {
         isPublic: false,
         userId: JSON.parse(sessionStorage.getItem("userId"))
       },
+      selection:[],
       total:0,
       newFolderLoading: false,
       span: 3,
@@ -140,6 +141,50 @@ export default {
     that.refresh();
   },
   methods: {
+     changeUpdate(id,name,value){
+        if(name == "isDelete"){
+            this.$Modal.confirm({
+                    title: '提示',
+                    content: '<p>删除后将无法找回，确认要删除？</p>',
+                    onOk: () => {
+                        that.doChangeUpdate(id,name,value)
+                    },
+                    onCancel: () => {
+                        
+                    }
+                });
+        }else{
+            this.doChangeUpdate(id,name,value)
+        }
+        
+    },
+    doChangeUpdate(id,name,value){
+        if(id != null){
+            that.doUpdate(id,name,value)
+        }else{
+            if(this.selection.length > 0){
+                that.doUpdate(this.selection.toString(),name,value)
+            }else{
+                that.$Message.info("还没选类目呢")
+            }
+        }
+    },
+    doUpdate(id,name,value){
+        var data = {ids:id}
+        data[name] = value;
+        this.com.post(this,'shop/update',data,function(res){
+            if(res.code){
+                that.$Notice.success({
+                    title:res.msg
+                })
+            }
+            that.findFolder();
+        })
+    },
+    changePage(e) {
+      this.fileQuery.pages.currentPage = e;
+      this.findFolder();
+    },
     //刷新
     refresh(){
         that.findFolder();
@@ -199,7 +244,8 @@ export default {
                 for(var i in res.params.msg){
                     res.params.msg[i].checked = false;
                 }
-                that.fileList =  res.params.msg
+                that.fileList =  res.params.msg;
+                that.total = res.params.total
                 that.windowResize();
             }
         });

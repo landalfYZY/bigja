@@ -36,6 +36,7 @@ import orgnizationUser from '../components/orgnization/user'
 import orgnizationUserInsert from '../components/orgnization/userInsert'
 
 import getorder  from '../components/getOrder/getOrder'
+import tableexpend from '../components/template/tableexpend'
 
 Vue.use(Router)
 
@@ -65,6 +66,8 @@ export default new Router({
         { path: '/goodsInsert_1', name: '新增商品', component: goodsInsert },
         { path: '/distribution', name: '配送地址', component: distribution },
         { path: '/shopCoupon', name: '店铺优惠', component: shopCoupon },
+        { path: '/getorder_1', name: '接单列表', component: getorder },
+        { path: '/tableexpend', name: 'table expend', component: tableexpend },
       ]},
 
       { path: '/shopInsert', name: '店铺信息', component: shopInsert },
@@ -76,6 +79,7 @@ export default new Router({
       { path: '/orgnizationUserInsert', name: '新增用户', component: orgnizationUserInsert },
 
       { path: '/getorder', name: '接单列表', component: getorder },
-    ]}
+    ]},
+   
   ]
 })
