@@ -16,20 +16,7 @@
                     </Select>
                 </div>
             </div>
-            <Menu mode="horizontal" theme="light" active-name="待接手" @on-select="tabsClick">
-                <MenuItem name="待接手">
-                    待接手
-                </MenuItem>
-                <MenuItem name="制作中">
-                    制作中
-                </MenuItem>
-                <MenuItem name="待取货">
-                    待取货
-                </MenuItem>
-                <MenuItem name="交易完成">
-                    交易完成
-                </MenuItem>
-            </Menu>
+            
             <Table ref="selection" border :columns="columns" :data="data" style="margin-top:15px" @on-selection-change="getSelected" :loading="tableLoading"></Table>
             <div class="panel-end" style="margin-top:15px">
                 <Page :total="total" size="small" show-total show-elevator :page-size="query.pages.size" @on-change="changePage"></Page>
@@ -68,76 +55,23 @@ export default {
           }
         },
         { type: "selection", width: 60, align: "center" },
-        {
-          title: "姓名/货号",
-          key: "waterNumber",
-          render(h, params) {
-            return h("div", params.row.concatName+'/'+params.row.waterNumber);
-          }
-        },
-        { title: "取货方式", key: "getType" },
-        { title: "商品数量", key: "productCount" },
-        { title: "订单金额", key: "total" },
-        { title: "状态", key: "status" },
+        // {
+        //   title: "姓名/货号",
+        //   key: "waterNumber",
+        //   render(h, params) {
+        //     return h("div", params.row.concatName+'/'+params.row.waterNumber);
+        //   }
+        // },
+        { title: "用户Id", key: "userId" },
+        { title: "剩余数量", key: "count" },
         { title: "创建时间", key: "createTime" },
-        {
-          title: "操作",
-          key: "action",
-          width: 150,
-          align: "center",
-          render: (h, params) => {
-            var te = null;
-            if (params.row.status == "待接手") {
-              te = h(
-                "Button",
-                {
-                  props: { type: "ghost", size: "small" },
-                  on: {
-                    click() {
-                      that.accept(params.row.sunwouId, "accept");
-                    }
-                  }
-                },
-                "接单"
-              );
-            } else if (params.row.status == "制作中") {
-              te = h(
-                "Button",
-                {
-                  props: { type: "ghost", size: "small" },
-                  on: {
-                    click() {
-                      that.accept(params.row.sunwouId, "noti");
-                    }
-                  }
-                },
-                "制作完成"
-              );
-            } else if (params.row.status == "待取货") {
-              te = h(
-                "Button",
-                {
-                  props: { type: "ghost", size: "small" },
-                  on: {
-                    click() {
-                      that.accept(params.row.sunwouId, "complete");
-                    }
-                  }
-                },
-                "完成交易"
-              );
-            }
-            var sm = h("ButtonGroup", [te]);
-            return sm;
-          }
-        }
+        
+        
       ],
       data: [],
       query: {
         fields: [],
         wheres: [
-          { value: "shopId", opertionType: "equal", opertionValue: "" },
-          { value: "status", opertionType: "equal", opertionValue: "待接手" },
           { value: "isDelete", opertionType: "equal", opertionValue: false }
         ],
         sorts: [{ value: "createTime", asc: false }],
@@ -155,34 +89,10 @@ export default {
   },
   mounted() {
     that = this;
-    this.query.wheres[0].opertionValue = this.$route.query.id;
     that.getList();
   },
   methods: {
-    tabsClick(e) {
-      for (var i in this.query.wheres) {
-        if (this.query.wheres[i].value == "status") {
-          this.query.wheres[i].opertionValue = e;
-        }
-      }
-      this.getList();
-    },
-    accept(id, name) {
-      var data = {
-        orderId: id
-      };
-      if (name == "accept") {
-        data.acceptId = JSON.parse(sessionStorage.getItem("userId"));
-      }
-      this.com.post(this, "order/" + name, data, function(res) {
-        if (res.code) {
-          that.$Notice.success({
-            title: res.msg
-          });
-          that.getList();
-        }
-      });
-    },
+
     getSelected(e) {
       var li = [];
       for (var i in e) {
@@ -244,7 +154,7 @@ export default {
       this.tableLoading = true;
       this.com.post(
         this,
-        "order/find",
+        "usercard/find",
         { query: JSON.stringify(this.query) },
         function(res) {
           if (res.code) {

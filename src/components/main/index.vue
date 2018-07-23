@@ -2,7 +2,7 @@
     <transition name="el-fade-in-linear">
         <div>
             <BackTop></BackTop>
-            <audio id="audio" src="/static/audio/blk.mp3">
+            <audio id="audio" src="https://www.sunwou.com/upload/blk.mp3" >
                 您的浏览器不支持 audio 标签。
             </audio>
             <Layout >
@@ -23,10 +23,13 @@
                                 </div>
                             </div>
                             <div class="panel-end item-center">
-                                <Badge count="0">
+                                <Button v-if="unType == 2" :type="websock.readyState == 1 ? 'success':'error'" size="small" @click="initWebSocket()" >
+                                    {{websock.readyState == 1 ?'已连接':'未连接'}}
+                                </Button>
+                                <Badge count="0" v-if="unType == 1">
                                     <Button @click="initWebSocket()" type="ghost" icon="ios-chatboxes-outline" size="small" style="color:#fff;font-size:16px"></Button>
                                 </Badge>
-                                <Badge count="0" style="margin-left:20px">
+                                <Badge count="0" style="margin-left:20px"  v-if="unType == 1">
                                     <Button  type="ghost" icon="ios-bell-outline" size="small" style="color:#fff;font-size:16px"></Button>
                                 </Badge>
                                 <Dropdown trigger="click"  style="margin-left:50px">
@@ -108,6 +111,8 @@ var that;
 export default {
   data() {
     return {
+      connect:false,
+      context:'连接服务器。。',
       unType: 1,
       activeName: "",
       user: "",
@@ -133,7 +138,11 @@ export default {
     // this.websock = this.com.connectSocket();
   },
   methods: {
+    conChange(e){
+       
+    },
     threadPoxi() {
+    
       // 实际调用的方法
       //参数
       const agentData = "mymessage";
@@ -170,14 +179,15 @@ export default {
           title: "您有新订单",
           desc: "请及时处理"
         });
-       that.$router.push({path:'getorder_1',query:{id:this.user.groupId}})
+       that.$router.push({path:'getorder_1',query:{id:this.user.groupId,ref:received_msg.sunwouId}})
     },
     websocketsend(agentData) {
       //数据发送
       this.websock.send(agentData);
+      
     },
     websocketclose(e) {
-      //关闭
+      this.context = '与服务器断开连接'
       console.log("connection closed (" + e.code + ")");
     },
     initNav() {

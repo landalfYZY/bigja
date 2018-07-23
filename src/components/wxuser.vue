@@ -74,11 +74,8 @@
 
 <script>
 var that;
-import carAdd from "./carouselAdd.vue";
 export default {
-  components: {
-    carAdd
-  },
+
   data() {
     return {
       tableLoading: false,
@@ -149,11 +146,7 @@ export default {
       query: {
         fields: [],
         wheres: [
-          {
-            value: "appid",
-            opertionType: "equal",
-            opertionValue: JSON.parse(sessionStorage.getItem("user")).sunwouId
-          },
+          { value: "phone", opertionType: "like", opertionValue: '1' },
           { value: "isDelete", opertionType: "equal", opertionValue: false }
         ],
         sorts: [{ value: "createTime", asc: false }],
@@ -196,29 +189,7 @@ export default {
       }
       this.getList();
     },
-    importFiles() {
-      if (this.schoolId == "") {
-        this.$Message.error("请选择一所学校");
-      } else if (this.excelUrl == "") {
-        this.$Message.error("请上传excel文件");
-      } else {
-        $.ajax({
-          url: sessionStorage.getItem("API") + "user/import",
-          data: { schoolId: this.schoolId, path: this.excelUrl },
-          dataType: "json",
-          method: "post",
-          success(res) {
-            that.handleClose();
-            if (res.code) {
-              that.$Message.success(res.msg);
-              that.getList();
-            } else {
-              that.$Message.error(res.msg);
-            }
-          }
-        });
-      }
-    },
+    
     fileSuccess(e) {
       that.excelUrl = e.msg;
     },
@@ -256,19 +227,13 @@ export default {
     },
     getList() {
       this.tableLoading = true;
-      $.ajax({
-        url: sessionStorage.getItem("API") + "wxuser/find",
-        data: { query: JSON.stringify(this.query) },
-        method: "post",
-        dataType: "json",
-        success(res) {
-          that.tableLoading = false;
-          if (res.code) {
+      this.com.post(that,"wxuser/find",{ query: JSON.stringify(this.query) },function(res){
+        if (res.code) {
             that.data = res.params.msg;
             that.total = res.params.total;
           }
-        }
-      });
+      },'tableLoading')
+      
     },
     navTo(path) {
       this.$router.push({ path: path });

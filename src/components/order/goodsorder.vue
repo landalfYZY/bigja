@@ -16,7 +16,10 @@
                     </Select>
                 </div>
             </div>
-            <Menu mode="horizontal" theme="light" active-name="待接手" @on-select="tabsClick">
+            <Menu mode="horizontal" theme="light" active-name="交易完成" @on-select="tabsClick">
+                <MenuItem name="交易完成">
+                    交易完成
+                </MenuItem>
                 <MenuItem name="待接手">
                     待接手
                 </MenuItem>
@@ -26,9 +29,7 @@
                 <MenuItem name="待取货">
                     待取货
                 </MenuItem>
-                <MenuItem name="交易完成">
-                    交易完成
-                </MenuItem>
+                
             </Menu>
             <Table ref="selection" border :columns="columns" :data="data" style="margin-top:15px" @on-selection-change="getSelected" :loading="tableLoading"></Table>
             <div class="panel-end" style="margin-top:15px">
@@ -136,8 +137,8 @@ export default {
       query: {
         fields: [],
         wheres: [
-          { value: "shopId", opertionType: "equal", opertionValue: "" },
-          { value: "status", opertionType: "equal", opertionValue: "待接手" },
+        //   { value: "shopId", opertionType: "equal", opertionValue: "" },
+          { value: "status", opertionType: "equal", opertionValue: "交易完成" },
           { value: "isDelete", opertionType: "equal", opertionValue: false }
         ],
         sorts: [{ value: "createTime", asc: false }],
@@ -155,7 +156,6 @@ export default {
   },
   mounted() {
     that = this;
-    this.query.wheres[0].opertionValue = this.$route.query.id;
     that.getList();
   },
   methods: {

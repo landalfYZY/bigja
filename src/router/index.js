@@ -5,6 +5,7 @@ import login from '../components/login'
 import main from '../components/main'
 import overview from '../components/overview'
 import register from '../components/register'
+import wxuser from '../components/wxuser'
 
 import receiptPanel from '../components/receipt/receiptPanel'
 
@@ -37,6 +38,8 @@ import orgnizationUserInsert from '../components/orgnization/userInsert'
 
 import getorder  from '../components/getOrder/getOrder'
 import tableexpend from '../components/template/tableexpend'
+import goodsorder from '../components/order/goodsorder'
+import cardorder from '../components/order/cardorder'
 
 Vue.use(Router)
 
@@ -71,6 +74,7 @@ export default new Router({
       ]},
 
       { path: '/shopInsert', name: '店铺信息', component: shopInsert },
+      { path: '/wxuser', name: '微信用户', component: wxuser },
 
       { path: '/coupon', name: '优惠券列表', component: coupon },
       { path: '/couponChange', name: '优惠券', component: couponChange },
@@ -79,6 +83,9 @@ export default new Router({
       { path: '/orgnizationUserInsert', name: '新增用户', component: orgnizationUserInsert },
 
       { path: '/getorder', name: '接单列表', component: getorder },
+
+      { path: '/goodsorder', name: '商品订单列表', component: goodsorder },
+      { path: '/cardorder', name: '购卡订单列表', component: cardorder },
     ]},
    
   ]

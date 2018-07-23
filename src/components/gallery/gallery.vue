@@ -89,14 +89,14 @@ var that;
 export default {
   data() {
     return {
-      userId: JSON.parse(sessionStorage.getItem("userId")),
+      userId: JSON.parse(sessionStorage.getItem("user")).groupId ? JSON.parse(sessionStorage.getItem("user")).parentId:JSON.parse(sessionStorage.getItem("userId")),
       breadcrumb:[{name:'主目录',id:'ne'}],
       groupId: "ne",
       folderDialogVisible: false,
       tempFolder: {
         name: "",
         isPublic: false,
-        userId: JSON.parse(sessionStorage.getItem("userId"))
+        userId: JSON.parse(sessionStorage.getItem("user")).groupId ? JSON.parse(sessionStorage.getItem("user")).parentId:JSON.parse(sessionStorage.getItem("userId"))
       },
       selection:[],
       total:0,
@@ -112,7 +112,7 @@ export default {
           fields: [],
         wheres: [
             {value:'groupId',opertionType:'equal',opertionValue:'ne'},
-            {value:'userId',opertionType:'equal',opertionValue: JSON.parse(sessionStorage.getItem("userId"))},
+            {value:'userId',opertionType:'equal',opertionValue: JSON.parse(sessionStorage.getItem("user")).groupId ? JSON.parse(sessionStorage.getItem("user")).parentId:JSON.parse(sessionStorage.getItem("userId"))},
             {value:'isDelete',opertionType:'equal',opertionValue:false}
         ],
         sorts: [],
@@ -246,7 +246,10 @@ export default {
                 }
                 that.fileList =  res.params.msg;
                 that.total = res.params.total
-                that.windowResize();
+                if(that.fileList.length > 0){
+                    that.windowResize();
+                }
+                
             }
         });
     },

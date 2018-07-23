@@ -2,7 +2,7 @@
     <div>
         <div>使用前，请确保蓝牙已开启</div>
         <div style="line-height:50px" class="font-grey">未配对任何设备</div>
-        <div><Button type="ghost" :loading="loading" @click="searchDevices()">{{loading ? '正在搜索设备':'搜索设备'}}</Button></div>
+        <div><Button type="ghost" :loading="loading" @click="devices()">{{loading ? '正在搜索设备':'搜索设备'}}</Button></div>
     </div>
 </template>
 <script>
@@ -21,6 +21,9 @@ export default {
     this.browserRedirect()
   },
   methods: {
+    devices(){
+      
+    },
     browserRedirect() {
       var sUserAgent = navigator.userAgent.toLowerCase();
       var bIsIpad = sUserAgent.match(/ipad/i) == "ipad";

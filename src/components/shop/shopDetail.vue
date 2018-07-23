@@ -84,6 +84,7 @@ export default {
     this.tabsClick("/getorder_1")
 
   },
+  
   methods: {
     navTo(path) {
       this.$router.push({ path: path ,query:{id:this.$route.query.id}});

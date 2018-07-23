@@ -178,7 +178,7 @@ export default {
               {
                 value: "parentId",
                 opertionType: "equal",
-                opertionValue: JSON.parse(sessionStorage.getItem("userId"))
+                opertionValue: JSON.parse(sessionStorage.getItem("user")).groupId ? JSON.parse(sessionStorage.getItem("user")).parentId:JSON.parse(sessionStorage.getItem("userId")) 
               },
               { value: "isDelete", opertionType: "equal", opertionValue: false }
             ],
